@@ -25,9 +25,9 @@ const ProtectedRoute = () => {
 		checkAuth();
 	}, []);
 
-	console.log("PAGE REDIRECTING...");
+	// console.log("PAGE REDIRECTING...");
 	const token = getAccessToken();
-	console.log("token, ", token);
+	// console.log("token, ", token);
 
 	if (loading) return null;
 	return token ? <Outlet /> : <Navigate to="/admin/login" replace />;
