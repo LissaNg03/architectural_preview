@@ -19,7 +19,7 @@ const delete_design_controller = async (req, res) => {
 
 		const { video, thumbnail, floor_plans, images } = design;
 
-		// 2. DELETE FROM CLOUDINARY (WITH CORRECT RESOURCE TYPES)
+		// 2. DEL FROM CLOUDINARY (WITH CORRECT RESOURCE TYPES)
 
 		const deleteOperations = [];
 
