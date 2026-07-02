@@ -13,3 +13,9 @@ dist/
 # OS files
 .DS_Store
 Thumbs.db
+
+#My Notes
+AuthNotes.md
+MyNotes.md
+NodejsNotes.md
+ServerStart.md

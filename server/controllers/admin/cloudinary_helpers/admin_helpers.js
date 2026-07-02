@@ -3,8 +3,6 @@ const cloudinary = require("../../../utils/cloudinary");
 
 const uploadToCloudinary = (fileBuffer, existingPublicId = null) =>
 	new Promise((resolve, reject) => {
-		// console.log("existingPublicId=====");
-		// console.log(existingPublicId);
 		const stream = cloudinary.uploader.upload_stream(
 			{
 				folder: "admin_uploads/images",
