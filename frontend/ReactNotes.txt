@@ -1,0 +1,2160 @@
+REACT IS A JAVASCRIPT FRAMEWORK LETS YOU BUILD INTERACTIVE WEBSITES OR WEB APPS USING SMALL, REUSABLE BLOCKS OF CODE CALLED COMPONENTS.
+
+How to Install React Js:
+1. Download Node.js from its official website
+2. Then in the terminal, type these commands to check if they have been successfully downloaded: node -v
+                       : npm -v
+3. Install Vite        :npm create vite@latest
+4. Then follow the prompts given:...
+
+
+How to Install React Js (Offline):
+
+Got you! Here's the **straightforward, no “or’s” version** to create a React project offline using Vite:
+
+---
+
+### ✅ Prerequisites (already done by you):
+- Node.js installed ✅  
+- npm installed ✅  
+- Vite installed ✅  
+
+---
+
+### 💥 Step-by-step (Offline):
+
+1. **Open terminal**  
+   Go to the folder where you want the project:
+   ```bash
+   cd path/to/your/projects
+   ```
+
+2. **Create React app using Vite**  
+   (This uses the cached Vite template):
+   ```bash
+   npm create vite@latest my-react-app -- --template react
+   ```
+
+3. **Go into your new project folder**:
+   ```bash
+   cd my-react-app
+   ```
+
+4. **Install dependencies** (will work if your cache is warm):
+   ```bash
+   npm install
+   ```
+
+5. **Start the dev server**:
+   ```bash
+   npm run dev
+   ```
+
+
+
+START:
+
+FOLDERS N FILES:
+🗂️ Use the public/ folder when:
+You want to reference files by URL (not import them)
+
+You don’t want the assets to be processed by the build tool (like compressed or hashed)
+
+You need the assets to be globally accessible from anywhere
+
+🗂️ Use the src/ folder when:
+Creating Components
+To ACCESS another component in another coomponent, you import it inside that component, export it in its file, import it in the component you want to accesss it in
+
+🗂️Main.jsx File Renders the HTML, with the script link (type: 'module'), using getElementById('root'), root is the id of the div in the index.html file, that renders everything
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+/////////////////////////////////////////////////////////////////////////
+
+
+
+COMPONENTS: Reusable Code i.e Function that returns jsx(Javascript XML), which can be used multiple time to render jsx.
+
+*Components inside other Components are called, CHILD COMPONENTS
+*Can only return one JSX wrapped in fragments <></>, or any HTML element
+
+Component Syntax:
+export default Component(){
+    return (<>
+    <h1>Hello World</>
+    </>)
+}
+
+NB: export default function App() { ... }
+This means App is the default export of the file, there can only be one default export in a file
+
+You import it like this:
+
+import App from "./App";
+✅ You don’t need curly braces.
+✅ You can rename it during import if you want:
+
+but if you dont use 'default' , it becomes a named export.
+
+You import it like this:
+import { App } from "./App";
+🚫 You must use curly braces.
+🚫 You must use the exact name unless you alias it:
+import { App as MyApp } from "./App";
+
+EXAMPLE of creating 2 components in 1 file and exporting them:
+
+export function Button(){
+    return (
+            <button className="button">
+             Click Me
+            </button>
+    )
+    
+}
+
+export function Button2(){
+    return (
+            <button>
+            Click Me Too
+            </button>
+    )
+    
+}
+
+WHEN INPORTING THEM YOU'D NEED TO USE CURLY BRACES LIKE THIS:
+import {Button, Button2} from './Button.jsx'
+
+
+
+OLD WAY OF CREATING COMPONENTS (using createElement()):
+import {createElement} from "react";
+
+
+export default function UserFavFoods() {
+    return createElement("section", 
+                         null, 
+                         <section>
+       <span>Favourite Foods:</span>
+       <br />
+       <ul>
+         <li>Fries</li>
+         <li>Pizza</li>
+         <li>Fried Chicken</li>
+       </ul>
+     </section>
+    )
+  }
+
+  ///////////////////////////////////////////
+
+USING JAVASCRIPT WITHIN THE XML
+
+You use {} curly braces to use JS in the return statement but outside it, you don't need to.
+  <p>&copy; {new Date().getFullYear()} Your website name</p> ...The Date method is used to get the current year
+
+
+///////////////////////////////////////
+How to use imgs in React:
+1. Say you saved an img in the assets folder, you first import it give it a name, then the img source will be that {name} in curly braces
+e.g 
+import ProfilePic from './assets/Me.png'
+ <img src={ProfilePic} alt="profile" width={200} />
+
+////////////////////////////////////////////////////////////////////////////
+
+CLASS:
+class is a RESERVED Keyword in React so we use className instead of class e.g <div className="Profile"><div/>,
+
+////////////////////////////////////
+
+PROPS: read-only properties that are shared between components.
+      A parent can send data to a child component.
+      <Component key=vlaue />
+
+A parent sends data to the child component it imported, e.g App.jsx imports Student.jsx, <Student key=value/> the value is sent to the Student Comp as a JS Object, so Student would access it like this, first name the object in parameters as 'props', the access it and use within itself like this props.key.
+
+E.g
+PARENT:
+import Student from "./Student"
+
+export default function App(){
+    return(
+        <>
+            <Student name="Lisakhanya" age={19} isStudent={true} />
+            <Student name="Noloti" age={27} isStudent={false} />
+            <Student name="Nkcubeko" age={19} isStudent={true} />
+            <Student name="Ayakha" age={17} isStudent={false} />
+        </>
+        
+    )
+}
+Will Render different Student Components with different names, ages ...
+
+CHILD:
+export default function Student(props) {
+    return(
+        <>
+        <div>
+            <p>Name: {props.name}</p>
+            <p>Age: {props.age}</p>
+            <p>Student: {props.age ? "Yes" : "No"}</p>
+        </div>
+        </>
+    )
+}
+NB: If you're using a number for value, or value is not in qoutes, you can use curly braces, and boolean values cannot be printed out, so use a Ternary Operator like this  {props.age ? "Yes" : "No"}
+NB: You can even assign functions as the value
+
+////////////////////////////////////////////////////////////////////////////
+
+PROPTYPES = a mechanism that ensures that the passed value is of the    correct datatype (useful for debugging purposes, doesn't stop the program from runnig though)
+           age: propTypes.number
+
+HOW TO USE PROPTYPES:
+1. Import propTypes from 'prop-types', import first
+2. In the Child Comp receiving the props, set the propTypes:
+E.G for the Student Component, below and outside the function, set PropTypes like a JS Object:
+
+Student.propTypes = {
+   name: PropTypes.string,
+   age: PropTypes.number,
+   isStudent: PropTypes.bool,
+}
+NB: Take note of the keywords, ;.propTypes, and PropTypes.string, .number, .bool
+
+///////////////////////////////////////////////////////////
+DEFAULT PROPS = default values for props in case they are not passed from the parent component, e.g name: "Guest", in case name is not passed from parent
+
+HOW TO SET DEFAULT PROPS: Also outside the function like the propTypes, but you don't need to import default props:-
+Student.defaultProps = {
+   name: "Guest",
+   age: 0,
+   isStudent: false,
+}
+
+////////////////////////////////////////////////////////////////
+
+STYLING A REACT COMPONENT WITH CLASS
+
+1.EXTERNAL (GREAT FOR GLOBAL STYLES)
+2.MODULE (PREFERRED FOR INDIVIDUAL COMP WITH UNIQUE STYLES)
+3.INLINE (COMPONENTS WITH MINIMAL STYLING)
+
+EXTERNAL = Normal like you would with vanila CSS and HTML, you create an external file and IMPORT it in the App.jsx  assuming the component you creating this style for is in the App.jsx comp OR import it in the file/component for which the style is for. This is Global bcz it'll affect all components in the App.jsx which is where you usually put all your web components together
+
+E.G:
+import './index.css'
+
+export default function  Button(){
+    return (
+            <button className="button">
+             Click Me
+            </button>
+    )
+    
+}
+
+index.css:
+
+.button{
+    background-color: rgb(107, 235, 255);
+    border-radius: 10px;
+    padding: 5px 10px;
+    border: none;
+    box-shadow: 2px 2px 5px rgb(112, 109, 109);
+    cursor: pointer;
+    transition: .2s;
+}
+
+.button:hover{
+    transform: scale(1.05);
+    color: aliceblue;
+}
+
+//////////////////////////////////////
+MODULE:
+MODULE styling helps avoid css naming conflicts, so module styling goes like this (e.g we are styling a button uniquely):
+
+<button className = "btn" id="btn-id">Click Me<button/>
+
+1. You create a Folder named Button, inside it is a Button.jsx comp, and a Button.module.css file, this is important so that the className of this component gets generated uniquely.
+2. You import the style sheet 'Button.module.css' like you would import a Component i.e import styleName from './Button.module.css', can name it anything
+3. set className = {styleName.btn}, if you referenced your Button with a class or id = {styleName.btn-id}
+
+THEN YOUR STYLING WILL WORK WITH UNIQUE CLASS/ID THAT CAN NEVER BE CONFLICTED!
+
+///////////////////////////////////////////////////////
+INLINE:Inside the component you wanna style, you create a JS object,
+ e.g const Styles = {
+   color: "red";
+   borderRadius: "10px"
+}
+* the properties are now written in CamelCase only, and all values are in quotes;
+* THEN set the attribute 'style' = {Styles}, in Curly brackets
+* No need to import the style:
+
+function Button(){
+   const Styles = {
+   color: "red";
+   borderRadius: "10px"
+   }
+   return(
+      <>
+         <button style = {Styles}>Click Me <button/>
+      </>
+   )
+}
+///////////////////////////////////////////////////////
+ 
+CONDITIONAL RENDERING = allows you to control what is rendered in your application based on certain conditions (show, hide, or change components)
+* Using props, we can set conditions on what to Rende
+E.G:
+CHILD COMPONENT (receiving the props obj):
+
+import PropTypes from 'prop-types';
+export default function UserGreeting(props){
+    
+    const welcomeMsg = <h1>Welcome {props.username} </h1>;
+    const leaveMgs = <h1>You need to LEAVE!!</h1>;
+
+    return props.isLoggedIn ? welcomeMsg : leaveMgs
+}
+
+//GOOD PRACTICE TO USE PROPTYPES AND DEFAULT PROPS:
+UserGreeting.proptypes = {
+    username: PropTypes.string,
+    isLoggedIn: PropTypes.bool,
+}
+
+UserGreeting.defaultProps = {
+    username: "Guest",
+    isLoggedIn: false,
+}
+
+PARENT COMPONENT:
+import UserGreeting from "./UserGreeting"
+export default function App(){
+    return(
+        <>
+            <UserGreeting username = "Lisa" />
+            <UserGreeting />
+        </>
+        
+    )
+}
+
+//////////////////////////////////////////////////////////////////////////
+RENDERING LISTS:
+*Rendering lists is rendering array elements, can an array of strings, numbers, objects etc.
+*You can render those elements as a component, as an html element i.e <li> list items or so.
+*You have to keep in mind that when rendering a list in react, each list element has to have a unique ID so React can keep track of the list items
+*You can use JS array methods to render elements of an array to the DOM, e.g map()...etc
+
+NB: rendering an array by returning just the name of the array returns all the array elements as a one long string
+
+RENDERING SIMPLE LIST OF FRUITS:
+START
+export default function List(){
+
+    const fruits = ["Apple", "Orange", "Banana", "Coconut", "Pineapple"];
+
+    fruits.sort();
+    
+    const listItems = fruits.map(fruit => <li>{fruit}</li>);
+
+    
+
+    return (<>
+            <ul>
+                {listItems}
+            </ul>
+    </>)
+
+}
+END
+
+PARENT(where it;s rendered):
+import List from './List.jsx'
+export default function App(){
+    return(
+        <>
+           <List />
+        </>
+        
+    )
+}
+
+
+RENDERING ARRAY OBJECTS AND SETTING A UNIQUE KEY TO THE LIST ITEMS:
+NB: list items coming from a database API usually come with an ID for the key, so it is important to use keys for list items:
+
+
+
+export default function List(){
+
+    const fruits = [{name: "Apple", calories: 95}, 
+                    {name: "Orange", calories: 45}, 
+                    {name: "Banana", calories: 105},
+                    {name: "Coconut", calories: 159}, 
+                    {name: "Pineapple", calories: 37}];
+
+    fruits.sort();
+
+    const listItems = fruits.map((fruit, index) => <li key={index} >{fruit.name}: <b>{fruit.calories}</b> </li>);
+
+    
+
+    return (<>
+            <ul>
+                {listItems}
+            </ul>
+    </>)
+
+}
+
+
+
+/////////////////////////////////////////////////////////
+
+SORTING AND FILTERING LISTS:
+
+export default function List(){
+
+    const fruits = [{name: "Apple", calories: 95}, 
+                    {name: "Orange", calories: 45}, 
+                    {name: "Banana", calories: 105},
+                    {name: "Coconut", calories: 159}, 
+                    {name: "Pineapple", calories: 37}];
+
+
+    // SORTING      
+    // fruits.sort((a,b) => a.calories - b.calories); ALPHABETICAL ORDER
+    // fruits.sort((a,b) => a.name.localeCompare(b.name)); REVERSE ALPHABETICAL ORDER
+    // fruits.sort((a,b) => b.calories - a.calories); NUMERIC
+    // fruits.sort((a,b) => b.name.localeCompare(a.name)); REVERSE NUMERIC
+
+
+    //FILTERING LISTS TO LOW OR HIGH CALORIES LISTS
+    const lowCalFruits = fruits.filter(fruit => fruit.calories < 100);
+    const highCalFruits = fruits.filter(fruit => fruit.calories >= 100);
+    
+
+    const listItems = highCalFruits.map((fruit, index) => <li key={index} >{fruit.name}: <b>{fruit.calories}</b> </li>);
+
+    
+
+    return (<>
+            <ul>
+                {listItems}
+            </ul>
+    </>)
+
+}
+
+//////////////////////////////////////////////////////////////
+CONDITIONAL RENDERING OBJECTS:
+
+import List from './List.jsx'
+export default function App(){
+
+    const fruits = [{name: "Apple", calories: 95}, 
+        {name: "Orange", calories: 45}, 
+        {name: "Banana", calories: 105},
+        {name: "Coconut", calories: 159}, 
+        {name: "Pineapple", calories: 37}];
+
+    const vegetables = [{name: "Potatoes", calories: 110}, 
+        {name: "Celery", calories: 45}, 
+        {name: "Carrots", calories: 105},
+        {name: "Broccoli", calories: 159}, 
+        {name: "Corn", calories: 37}];
+
+    return(
+        <>
+        {fruits.length > 0 ? <List  items={fruits} category="Fruits" /> 
+        : null}
+        {vegetables.length > 0 ? <List  items={vegetables} category="Veges" />
+        : null}       
+        </>
+        
+    )
+}
+
+NB: {fruits.length > 0 ? <List  items={fruits} category="Fruits" /> 
+        : null} = if the length of fruit is > 0 render the List Comp if not then null is rendered, (this is known as SHORT CIRCUITING)
+        
+        ANOTHER WAY OF WRITING THE TERNARY OPERATOR = {fruits.length > 0 && <List  items={fruits} category="Fruits" />}
+
+        ...Replace the ? with && and there's no need for an else statement, the Comp will render only if the condition is true
+
+
+/////////////////////////////////////////////////////////////////////////
+
+SETTING PROPTYPES FOR THE ELEMENTS OF AN ARRAY, I.E OBJECT ELEMENTS IN THIS CASE: use the shape() method within the arrayOf()
+
+
+List.propTypes = {
+    category: propTypes.string,
+    items: propTypes.array,
+    items: propTypes.arrayOf(propTypes.shape( {name: propTypes.string,
+                                               calories: propTypes.number
+    }))
+}
+/////
+
+import propTypes from 'prop-types'
+
+export default function List(props){
+
+    const category = props.category;
+    const itemList = props.items;
+
+    const listItems = itemList.map((item, index) => <li key={index} >
+        {item.name}: <b>{item.calories}</b>
+    </li> )
+
+    return (<>
+             <h1>{category}</h1>
+            <ul>
+                {listItems}
+            </ul>          
+    </>)
+
+}
+
+List.defaultProps = {
+    category: "Category",
+    items: [],
+}
+
+List.propTypes = {
+    category: propTypes.string,
+    items: propTypes.array,
+    items: propTypes.arrayOf(propTypes.shape( {name: propTypes.string,
+                                               calories: propTypes.number
+    }))
+}
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////
+
+
+
+CLICK EVENTS IN REACT:
+
+E.G onClick={callback} = An interaction when a user clicks on a specific element, We can respond clicks by passing a callBack.
+* when you call a function on click event you must make sure you dont use brackets like callback(), this will call the function immediately without waiting for a click of a button,
+
+* In case you have arguments to pass to the function, you can use this instead: onClick={() => callback(args)}, use a arrow function when calling the function onClick, onClick={() => callback(args)};
+
+THERE ARE A LOT OF EVENT LISTENERS e.g oncClick, onDoubleClick etc, you can take advantage of the event object and a LOT OF DOM MANIPULATION
+
+EXAMPLE CODE CALLING A CALLBACK ONLCLICK EVENT:
+
+import './index.css'
+
+export default function  Button(){
+
+    const styles = {
+    backgroundColor: "rgb(107, 235, 255)",
+    borderRadius: "10px",
+    padding: "5px 10px",
+    border: "none",
+    boxShadow: "2px 2px 5px rgb(112, 109, 109)",
+    cursor: "pointer",
+    transition: ".2s"
+    }
+    
+    function handleClick(){
+        console.log("OUCH!!")
+    }
+    
+    function handleClick2(name){
+        console.log(`${name} stop clicking me!`)
+    }
+
+    return (
+            <button style={styles} onClick={() => handleClick2("Lisa")}>
+             Click Me
+            </button>
+    )
+    
+}
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////
+
+A WAY TO APPROACH RENDERING LISTS INSIDE LISTS OF AN OBJECT FROM LIKE A JSON FILE, LIKE API:
+
+import Button from './Button.jsx'
+export default function App(){
+
+    const array = [{name: "Lisa",
+                    age: 19,
+                    favFood:["Pizza", "Burger", "Fries"]
+    }];
+
+    const listItems = array.map((item, index) => 
+    {
+        const food = item.favFood;
+        const foodItems = food.map((f,i) => <li key={i}>{f}</li>)
+
+        return <ul key={index} > 
+        <li>{item.name}</li>
+        <li>{item.age}</li>
+        <li>{foodItems}</li>
+            </ul>;
+    }
+)  
+    return(
+        <>
+        <Button>     
+        </Button>
+        {listItems}
+        </>
+    )
+}
+
+NB: prolly shouldn't render lists inside another list though i.e <li><li></li></li>
+
+//////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+
+REACT HOOKS =  Special function that allows functional components to use React feautures without writing class components (React v16.8)
+                (useState, useEffect, useContext, useReducer, useCallback, and more...)
+
+
+useState() = A React hook that allows the creation of a stateful variable AND a setter function to update its value in the Virtual DOM.
+[name, setName]
+NB: to use react hooks, you must import them i.e import React, {useState} from 'react'
+
+E.G OF USING THE USESTATE():
+
+import React, {useState} from 'react'
+
+export default function MyComponent(){
+
+    const [name, setName] = useState("Guest");
+    const [age, setAge] = useState(0);
+    const [isEmployed, setIsEmployed] = useState(false);
+
+    function updateName(){
+        setName("Lisakhanya")
+    }
+
+    function incrementAge(){
+        setAge(age + 1)
+    }
+
+    function toggleEmployedStatus(){
+        setIsEmployed(!isEmployed)
+    }
+
+    return(
+        <>
+            <p>Name: {name}</p>
+            <button onClick={updateName} >Set Name</button>
+            <p>Age: {age}</p>
+            <button onClick={incrementAge} >Increment Age</button>
+            <p>Is Emplyed: {isEmployed ? "Yes" : "No"}</p>
+            <button onClick={toggleEmployedStatus} >Set Name</button>
+        </>
+    )
+
+}
+
+
+CREATING A COUNTER PROGRAM USING THE useState() HOOK:
+
+import React, {useState} from 'react'
+
+export default function Counter(){
+
+    const [counter, setCounter] = useState(0);
+
+    function Increment(){
+        setCounter(counter + 1)
+    }
+
+    function Decrement(){
+        setCounter(counter - 1)
+    }
+
+    function Reset(){
+        setCounter(0)
+    }
+
+    return <div>
+        <h2>{counter}</h2>
+        <button onClick={Increment} >Increment</button>
+        <button onClick={Reset} >Reset</button>
+        <button onClick={Decrement} >Decrement</button>
+    </div>
+
+}
+
+
+////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+
+onChange = event handler used primarily with form elements
+            e.g <input>, <textarea>, <select>, <radio>
+            Triggers a function every time the value of the input changes
+
+EXAMPLE OF USING THE onChange() event handler, to update useState() hook onChange of the input values::
+
+START
+import React, {useState} from 'react'
+
+export default function Form(){
+
+    const [name, setName] = useState("Guest");
+    const [quantity, setQuantity] = useState(1);
+    const [comment, setComment] = useState("");
+    const [payment, setPayment] = useState("");
+    const [shipping, setShipping] = useState("Delivery");
+
+    function handleName(event){
+        setName(event.target.value)
+    }
+
+    function handleQuantity(event){
+        setQuantity(event.target.value)
+    }
+
+    function handleComment(event){
+        setComment(event.target.value)
+    }
+
+    function handlePayment(event){
+        setPayment(event.target.value)
+    }
+
+    function handleShipping(_shipping){
+        setShipping(_shipping)
+    }
+
+    return(
+        <>
+        <input type="text" onChange={handleName} ></input>
+        <br></br>
+        <label>Name: {name}</label>
+        <br></br>
+        <input min="1" type="number" value={quantity} onChange={handleQuantity} ></input>
+        <br></br>
+        <label>Quantity: {quantity}</label>
+        <br></br>
+        <textarea type="text" palceholde="Enter delivery instructions" value={comment} onChange={handleComment} ></textarea>
+        <br></br>
+        <label>Comment: {comment}</label>
+        <br></br>
+
+        <select value={payment} onChange={handlePayment} >
+        <option>pick an option</option>
+        <option>MasterCard</option>
+        <option>Visa</option>
+        <option>Gift Card</option>
+        </select>
+
+        <br></br>
+        <label>Payment: {payment}</label>
+        <br></br>
+
+        <input type="radio" id="PickUp" name="delivery" onChange={() => handleShipping("Pick Up")} checked={shipping === "Pick Up"} ></input>
+        <label for="PickUp" >Pick Up</label>
+        <br></br>
+
+        <input type="radio" id="Delivery" name="delivery" onChange={() => handleShipping("Delivery")} checked={shipping === "Delivery"} ></input>
+        <label for="Delivery" >Delivery</label>
+
+        <p>Shipping: {shipping}</p>        
+        </>
+    )
+
+}
+END
+'
+
+MOOOOOOOOOORE EXAMPLES
+/////////////
+COLOR PICKER PROGRAM USING THE ONCHANGE EVENT HANDLER
+
+import React, {useState} from 'react'
+
+export default function ColourPicker(){
+
+    const [selectedColor, setSelectedColor] = useState("red")
+
+    function handleColorChange(event){
+            setSelectedColor(event.target.value)
+    }
+
+    return <>
+        <h1>Colour Picker</h1>
+        <div style={{backgroundColor: selectedColor, 
+            width:"200px", height:"200px", 
+            borderRadius:"10px",
+             display: "flex-box",
+             justifyItems: "center", 
+             alignContent: "center",
+              textAlign: "center"}} >
+                
+            <p >Selected Color: <br></br> {selectedColor} </p>
+        </div>
+        <label>Select a Color:</label>
+        <input onChange={handleColorChange} type="color" value={selectedColor}></input>
+    </>
+}
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+updater function = A function passed as an argument to useState() usually e.x setYear(y => y + 1)
+        Allow for safe updates based on the previous state
+        Used with multiple state upgrades and asynchronous functions 
+        Good practice to use updater functions
+
+Takes the PENDING state to calculate NEXT state.
+React puts your updater function in queue (waiting in line)
+During the next render, it will call them in the same order. 
+
+NB: Use the updater function whenever the value you want is depended on the previous state
+
+import React, {useState} from 'react'
+
+export default function Counter(){
+
+    const [counter, setCounter] = useState(0);
+
+    function Increment(){
+        setCounter(_c => _c + 1)
+    }
+
+    function Decrement(){
+        setCounter(_c => _c - 1)
+    }
+
+    function Reset(){
+        setCounter(0)
+    }
+
+    return <div>
+        <h2>{counter}</h2>
+        <button onClick={Increment} >Increment</button>
+        <button onClick={Reset} >Reset</button>
+        <button onClick={Decrement} >Decrement</button>
+    </div>
+}
+
+//////////////////////////////////////////////////////////
+
+
+ONCHANGE TO CHANGE AN OBJECT:
+(using a spread operator)
+
+
+    const [car, setCar] = useState({year: 2024,
+                                    make:"Mercedez Benz",
+                                    model:"AMG CLE"
+                                    })
+
+    
+    function handleYearChange(event){
+        setCar({...car, year:2026}) // = {year: 2024, make:"Mercedez Benz", model:"AMG CLE", year:2026 } 
+        
+        //JS takes the last value when there's more than one same keys i.e year
+    }     
+
+    NB: better to use the updater function though:
+
+    setCar(c => ({...c, year:2026}))
+
+
+MOOOOOOOOOOOOOOOORE EXAMPLE:
+
+import React, {useState} from 'react'
+
+export default function UpdateObject(){
+
+    const [car, setCar] = useState({year: 2024,
+                                    make:"Mercedez Benz",
+                                    model:"AMG CLE"
+                                    })
+
+    
+    function handleYearChange(event){
+        setCar(c => ({...c, year: event.target.value}))
+    }                                
+    
+    function handleMakeChange(event){
+        setCar(c => ({...c, make: event.target.value}))
+    }                                
+    
+    function handleModelChange(event){
+        setCar(c => ({...c, model: event.target.value}))
+    }      
+    
+    return ( <div>
+                <p>Your favourite car is: {car.year} {car.make} {car.model}</p>
+
+                <input type="number" value={car.year} onChange={handleYearChange} ></input><br></br>
+
+                <input type="text" value={car.make} onChange={handleMakeChange} ></input><br></br>
+
+                <input type="text" value={car.model} onChange={handleModelChange} ></input><br></br>
+            </div>)
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ADDING AND REMOVING ELEMENTS OR LIST ITEMS FROM A LIST/ARRAY, WITH THE USESTATE, ONCHANGE, SPREAD OPERATOR, FILTER
+
+import React, {useState} from 'react'
+
+export default function UpdateArray(){
+
+    const [Foods, setFoods] = useState(["Apple", "Chicken", "Noodles", "Bacon"]);
+
+    const foodList = Foods.map((f,i) => <li key={i} onDoubleClick={()=> removeFood(i)} >{f}</li>)
+
+    function addFood(){
+       const newFood = document.querySelector('input').value;
+
+       setFoods(f => [...f, newFood])//ARRAY spread operator, newFood will be added to the end, replacing any matching element if it exists
+    }
+
+    function removeFood(index){
+       setFoods(f => f.filter((e,i)=> i !== index) )
+    }//provided with the index of list item double clicked, and updating the Foods stateful array, to filter and return elements that have an index not equal to provided index.
+   
+    
+    return ( 
+        <>
+        <input type="text"></input>
+        <button onClick={addFood} >Add Food</button>
+        <ul>
+         {foodList}
+        </ul>
+        </>
+    )
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+
+CREATING AN ARRAY OF OBJECTS AND UPDATING THEIR STATE, useState(), filter(), spreadOperator[...]
+
+import React, {useState} from 'react'
+
+export default function CarObjs(){
+
+    const [cars, setCars] = useState([]);
+    const [carYear, setCarYear] = useState(new Date().getFullYear());
+    const [carMake, setCarMake] = useState("");
+    const [carModel, setCarModel] = useState("");
+
+    function handleAddCar(){
+        
+        const newCar = {year: carYear,
+                        make: carMake,
+                        model: carModel,
+        }
+
+        setCars(c => [...c, newCar]);
+
+        setCarYear(new Date().getFullYear());
+        setCarMake("");
+        setCarModel("");
+
+    }
+
+    function handleRemoveCar(index){
+        setCars(c => c.filter((_, i) => i !== index));
+    }
+
+    function handleYearChange(event){
+        setCarYear(event.target.value)
+    }
+
+    function handleMakeChange(event){
+        setCarMake(event.target.value)
+    }
+
+    function handleModelChange(event){
+        setCarModel(event.target.value)
+    }   
+
+    return(
+        <>
+        
+         <h2>List of Cars</h2>
+         <ul>
+            {cars.map((car,index)=> 
+            <li onClick={() => handleRemoveCar(index)} key={index}>{car.year} {car.make} {car.model}</li>
+            )}
+         </ul>        
+         <input type="number" value={carYear} onChange={handleYearChange} placeholder='Enter car year' /><br/>
+
+         <input type="text" value={carMake} onChange={handleMakeChange} placeholder='Enter car make'/> <br/>
+
+         <input type="text" value={carModel} onChange={handleModelChange} placeholder='Enter car model'/><br/>
+
+         <button onClick={handleAddCar} >Add Car</button>
+        </>
+    )
+} 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////
+
+CREATING A TO DO LIST APP WITH REACT, useState(), Filter(), element-swapping, 
+
+import React, {useState} from 'react'
+
+export default function ToDoList(){
+
+    const [tasks, setTasks] = useState(["Eat Breakfast", "Take a shower"]);//initial array stateful values.
+    const [newTask, setNewTask] = useState("")//new task is set to empty string initiallu
+
+    function handleInputChange(event){
+        setNewTask(event.target.value);
+    }//set new task to be input value, so new task keeps that string
+
+    function addTask(){
+        if(newTask.trim() !== ""){
+            setTasks(t => [...t, newTask]);
+            setNewTask("")
+        }
+    }//checks if new task trimmed, removing leading/trailing spaces (basically checking if its an empty string), if not, set tasks array to be whatever it was and include new task using SPREAD OPERATION
+
+    function deleteTask(index){
+        const updatedTasks = tasks.filter((_, i) => i !== index);
+        setTasks(updatedTasks)
+    }//the task item clicked brings its index, then we filter the tasks array, to bring only elements that have an index not equal to the index clicked, essentially removing that task from the array
+
+    function moveTaskUp(index){
+        if(index > 0){
+            const updatedTasks =  [...tasks];
+            [updatedTasks[index], updatedTasks[index - 1]] 
+            = [updatedTasks[index - 1], updatedTasks[index]]
+            setTasks(updatedTasks)
+        }
+    }//checks if the index brought by the clicked element i.e task, is greater than 0 (not first element), then on click of the move up btn, create a local var that equals to the global stateful var of tasks(array), then modify the local var, swapping elements based on indexes, element on the index that is clicked is swapped with an element of the prev index visa versa
+
+    function moveTaskDown(index){
+        if(index !== tasks.length - 1){
+            const updatedTasks =  [...tasks];
+            [updatedTasks[index], updatedTasks[index + 1]] 
+            = [updatedTasks[index + 1], updatedTasks[index]]
+            setTasks(updatedTasks)
+        }
+    }//checks if the index brought by the clicked elememnt, is not equal to the tasks length - 1 = (last index), if not then similar to the above login happens reversely
+    
+    return(
+        <div class="to-do-list">
+            <h1>To Do List</h1>
+
+            <div>
+                <input type="text" 
+                placeholder='Enter a task...'
+                value={newTask}
+                onChange={handleInputChange}
+                 />
+                 <button className='add-btn'
+                 onClick={addTask}>
+                    Add
+                 </button>
+            </div>
+
+            <ol>
+                {tasks.map((task, index) => 
+                <li key={index}>
+                    <span class="text">{task}</span>
+                    <button 
+                    className='delete-button'
+                    onClick={()=> deleteTask(index)}
+                     >
+                        Delete
+                     </button>
+
+                    <button 
+                    className='move-button'
+                    onClick={()=> moveTaskUp(index)}
+                     >
+                        ⬆️
+                     </button>
+
+                    <button 
+                    className='move-button'
+                    onClick={()=> moveTaskDown(index)}
+                     >
+                        ⬇️
+                     </button>
+                </li>
+                )}
+            </ol>
+
+        </div>
+    )
+}
+
+NB: here we are modifying the global array that renders the list items, i.e tasks, based on event brought by the list items, using filter methods, array swapping etc.
+
+/////////////////////////////////////////////////////////////////////
+
+useEffect() = React HOOK that tells React DO SOME CODE WHEN (pick one):
+            This component re-renders
+            This component mounts
+            The state of value
+
+// useEffect(function, [independencies])
+
+1. useEffect(()=> {})                   //Runs after every re-render
+2. useEffect(()=> {}, [])               //Runs only on mount
+3. useEffect(()=> {}, [dependencies])   //Runs on mount + when dependency changes
+4. useEffect(()=> {
+
+}
+
+return () ={
+    CLEAN UP CODE AFTER EVERY RE-RENDER / UNMOUNT
+})
+
+USES:
+- Event Listeners
+- DOM MANIPULATION
+- Subscriptions (real-time updates)
+- Fetching Data from an API
+- Clean up when a component unmounts
+
+NB: mount means adding a comp to the DOM, and unmount means removing a comp from the DOM
+
+
+WHY useEffect is very useFUll:
+
+import React, {useEffect, useState} from 'react'
+
+export default function UseEffect(){
+
+    const [count, setCount] = useState(0);
+    const [color, setColor] = useState("red");
+
+    // useEffect(()=> {
+    //         document.title = `Count: ${count}`
+    // }, [count])//bcz there's count dependency, the title will change on mount and whenever count is changed/updated
+
+    // useEffect(()=> {
+    //     document.title = `Count: ${count}`
+    //     }, [])//coz theres empty array dependency, the title will only change on mount ONLY
+
+    useEffect(()=> {
+        document.title = `Count: ${count}, Color: ${color}`
+
+        return () =>{
+        //CLEANUP CODE
+        }
+
+        },[color, count])//coz there no deps, the code will run every re-render, basically the same without the useEffect, but with useEffect, ,you can use CLEAN UP, so e.g you add an event listener, it is not added multiple times, it'll be added and removed multiple times though, so it would be better to use empty array if adding an event listener so it is only added once on mount, then use cleanUP i.e element.removeEventListener("click", callback)
+
+    function addCount(){
+        setCount(c => c + 1)
+    }
+
+    function subtractCount(){
+        setCount(c => c - 1)
+    }
+
+    function changeColor(){
+        setColor(c => c === "red" ? "green" : "red")
+    }
+
+    return(<>
+    <p style={{color: color}} >Count: {count}</p>
+    <button onClick={addCount} >Add</button>
+    <button onClick={subtractCount} >Subtract</button><br/>
+    <button onClick={changeColor} >Toggle Color</button>
+    </>)
+
+}
+
+//////////////
+
+THE CLEAN UP CODE, OF useEffect()::
+
+import React, {useEffect, useState} from 'react'
+
+export default function UseEffect(){
+
+    const [width, setWidth] = useState(window.innerWidth);
+    const [height, setHeight] = useState(window.innerHeight);
+
+    // window.addEventListener("resize", handleResize);
+    // console.log("EVENT LISTENER ADDED")//EVENT LISTENER ADDED ON EVERY RENDER/WINDOW SIZE CHANGE
+
+    useEffect(()=>{
+        window.addEventListener("resize", handleResize);
+        console.log("EVENT LISTENER ADDED")//only will add the event listener once on mount, and can even clean up/ remove event listener when unmounting the COMP/ after every re-render be4 the sec re-render, using the Return
+
+        //NB: If you are on StrictMode, the useEffect will run twice, running a dev only setup and a clean up cycle.
+        //NB: You can have more than one useEffect, more than one dependencies
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            console.log("EVENT REMOVED");
+        }
+    },[width])
+
+    function handleResize(){
+        setWidth(window.innerWidth)
+        setHeight(window.innerHeight)
+    }
+
+
+    return(<>
+
+    <h1>Window width: {width}px</h1>
+    <h1>Window height: {height}px</h1>
+    
+    </>)
+
+}
+//////////////////////////////////////////////////////////////////////////////////
+RENDERING LOGIC IN REACT:
+VARIBABLES TO KEEP VALUES THAT PERSIST IN REACT RE-RENDERS i.e useState(), useRef()
+
+✅ **Exactly, you nailed it perfectly.** Here's a cleaner summary you can paste directly into your notes:
+
+---
+
+### 🧠 React: `useState()` vs `useRef()` – Quick Notes
+
+#### 🔁 Re-renders in React
+Every time state or props change, React **re-runs the entire component function**, meaning:
+- All **regular variables (`let`, `const`, `var`) are reset**.
+- You lose any values stored in them — unless you use React hooks.
+
+---
+
+#### ✅ `useState()`
+
+- **Purpose:** Stores values that should affect the UI and trigger a re-render.
+- **Persists across re-renders.**
+- **Triggers a re-render when updated.**
+
+```js
+const [count, setCount] = useState(0);
+setCount(count + 1); // Triggers re-render with new value
+```
+
+---
+
+#### ✅ `useRef()`
+
+- **Purpose:** Stores values that should persist between re-renders **but don’t affect the UI**.
+- **Persists across re-renders.**
+- **Does NOT trigger a re-render when updated.**
+- **Access with `.current`** like this: `myRef.current = 123;`
+
+```js
+const intervalId = useRef(null);
+intervalId.current = setInterval(() => {}, 1000);
+```
+
+🧠 Think of `useRef()` like a **static variable** in vanilla JS or a **hidden notepad** that doesn’t disturb the UI.
+
+---
+
+### 📌 When to Use What
+
+| Use Case                         | Hook to Use |
+|----------------------------------|-------------|
+| Track user input or counter      | `useState()`|
+| Store timers, IDs, DOM refs      | `useRef()`  |
+| You want to trigger re-renders   | `useState()`|
+| You want to persist without re-render | `useRef()`  |
+
+---
+
+///////////////////////////////////////////////////////////////////////////
+
+useRef() HOOK = 
+Absolutely! Here's a **beginner-friendly useRef tutorial** in React — including how to **store values** and **reference DOM elements**. Take notes from this structure if you want to understand it fully.
+
+---
+
+## 🔹 What is `useRef`?
+`useRef` is a React hook that gives you a **mutable reference** object that **persists across renders**.
+
+It has two main uses:
+1. **Referencing DOM elements**
+2. **Storing values that don’t trigger re-renders**
+
+---
+
+## ✅ 1. How to Use `useRef` to Store Values
+
+```js
+import React, { useRef, useState } from "react";
+
+export default function RefExample() {
+  const renderCount = useRef(0);
+  const [text, setText] = useState("");
+
+  const handleChange = (e) => {
+    setText(e.target.value);
+    renderCount.current += 1;
+  };
+
+  return (
+    <div>
+      <input value={text} onChange={handleChange} />
+      <p>You've typed: {text}</p>
+      <p>This component rendered: {renderCount.current} times</p>
+    </div>
+  );
+}
+```
+
+🧠 `renderCount.current` will update on every change, but **it won’t trigger a re-render**, so it’s super efficient for tracking values behind the scenes.
+
+---
+
+## ✅ 2. Referencing a DOM Element (e.g., input focus)
+
+```js
+import React, { useRef } from "react";
+
+export default function InputFocus() {
+  const inputRef = useRef(null);
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" placeholder="Click the button to focus me" />
+      <button onClick={focusInput}>Focus Input</button>
+    </div>
+  );
+}
+```
+
+🧠 `ref={inputRef}` links the element to your reference, and then you can call methods like `inputRef.current.focus()`.
+
+---
+
+## ⚠️ Important Notes:
+
+- `useRef()` returns an object like this:  
+  ```js
+  { current: initialValue }
+  ```
+
+- It doesn’t cause a re-render when `current` changes.
+- Perfect for:
+  - DOM manipulation
+  - Timers / intervals
+  - Storing previous values
+  - Mutable data without re-render
+
+---
+
+## ✅ Summary Cheat Sheet
+
+| Purpose               | Code Sample                              |
+|------------------------|-------------------------------------------|
+| Store mutable value    | `const counter = useRef(0)`               |
+| Access DOM element     | `const inputRef = useRef(null)`           |
+| Use DOM ref            | `<input ref={inputRef} />`               |
+| Access ref value       | `inputRef.current.focus()`                |
+| Keep value on render   | `myRef.current = updatedValue`           |
+
+////////////////////////////////////////////////////////////////////////////////////
+
+useContext:
+
+prop drilling:
+IN ORDER TO BE ABLE TO ACCESS AND UPDATE VALUES DECLARED IN OTHER COMPONENTS INSIDE A DIFFERENT COMPONENT, YOU'D HAVE TO PASS THAT VARIBLE TO THAT COMPONENT THROUGH PROPS, 
+-ONLY IF IT IS A CHILD OF THE COMP THAT CONTAINS THIS VAR YOU WANNA UPDATE, IF IT IS A GRAND CHILD, YOU FIRST PASS THE PROPS TO THE IMMEDIATE CHILD FROM IMMEDIATE CHILD TO GRAND CHILD TO GET ACCESS,
+NB: TO UPDATE THE STATE OF A STATEFUL VAR IN THE PARENT FROM INSIDE THE GRANDCHIILD SCOPE, YOU'D HAVE TO PASS THE UPDATER FUNCTION AS WELL AS A PROP.
+
+VERY NB: IF SIBLING COMPONENTS WANT TO ACCESS A VAR FROM EACH OTHER BUT ARE NOT NESTED WITHIN ONE ANOTHER, THEN THE PARENT MUST HAVE THAT VAR SO IT CAN BE SHARED BY THE SIBLINGS
+=====================================================================
+
+useContext() = React Hook that allows you to share values between multiple levels of components without passing props through each level (prop-drilling).
+
+PROVIDER COMPONENT
+1. import {createContext} from 'react';
+2. export const cartCountContext = createContext();
+   const [cartCount, setCartCount] = useState(0);
+3. <cartCountContext.Provider value={cartCount}>
+        <Child/>(this child and its children and of children will have access to cartCount)
+    <cartCountContext.Provider>
+
+//NB: you can even pass more than one value, pass an object full of values you can manipulate dynamically::
+
+3. <cartCountContext.Provider value={{cart: cartCount, setter:setCartCount}}>
+        <Child/>(this child and its children and of children will have access to cartCount)
+    <cartCountContext.Provider>
+
+3. //ACCESSING THESE OBJECT VALUES IN CONSUMER:::
+
+1. import React, {useContext} from 'react'
+   import {cartCountContext} from './Child.jsx'
+2. const passedObj = useContext(cartCountContext);
+
+//updating the setter function:
+passedObj.setter(s => s + 1)
+
+
+
+CONSUMER COMPONENTS
+1. import React, {useContext} from 'react'
+   import {cartCountContext} from './Child.jsx'
+2. const value = useContext(cartCountContext);
+
+//////////////////////////////////
+PROP DRILLING COMPONENTS PASSING USER AND setter
+
+////////////////////////////////
+import CompA from './CompA.jsx'
+import './index.css'
+export default function App(){
+
+    return <> 
+    <CompA />
+    </>
+
+}
+//////////////////////////////////
+//PROVIDER COMPONENT (PARENT) PASSING PROPS TO CHILDREN::::
+import CompB from './CompB.jsx';
+import React, {useState} from 'react';
+
+export default function CompA(){
+
+    const [user, setUser] = useState("Lissa");
+ 
+    return(<>
+    <div className="compBox">
+        <h2>Component A</h2>
+        <h3>Username: {user}</h3>
+        <CompB user={user} setter={setUser} />
+    </div>
+    </>)
+}
+/////////////////////////////////////////////
+export default function CompC(props){
+    return(<>
+    <div className="compBox">
+        <h2>Component C</h2>
+        <h3>Username: {props.user}</h3>
+        <button onClick={() => props.setter("Lisakhanya Ngwendu")} >update again</button>
+    </div>
+    </>)
+}
+//////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////
+
+REACT ROUTER:
+
+1. First you install and import Router, similar to useContext
+2. In the ROOT component, which is main.jsx that imports App.jsx, you import the React Router and provide routes, then you replace the App.jsx comp, that is nested in the'root' render method, there, you put the RouterProvider, which will return the routes create, specifically the base route first
+
+//INSTRUCTIONS:
+
+IN MAIN.jsx::
+import {createBrowserRouter, RouterProvider} from 'react-router-dom;
+
+const router = createBrowserRouter([
+    {
+        path:"/",
+        element: <App />
+    },
+    {
+    path: "/pathName",
+    element: <Comp />
+    }
+    
+])
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <React.StrictMode>
+    <RouterProvider router={router} />
+    </React.StrictMode>
+)
+
+//BOOM!!, base router is returned i.e App.jsx
+        the "/" single slash means base Comp, path = the page/comp path/URL/Link shown on the browser URL field AND the element = the actual HTML/JSX you want return
+        NB: the path can be named anything but will return the specified element
+
+//You can set multiple paths to different comps/pages in the createBrowserRouter Object:
+just add another path::
+{
+    path: "/pathName",
+    element: <Comp />
+}
+
+//CHILDREN ROUTES: (CREATING A NAVIGATION BAR TO SWITCH TO DIFFERENT PAGES)
+SO the routes above are root routes, meaning they are not descendents of an upper page like User/About/...
+^ this path/ url means About is a child of User page, so you have to be in the User page to be able to access the About page....that's children routes::
+
+const router = createBrowserRouter([
+    {
+        path:"/",
+        element: <App />,
+        children:[
+                {
+                    path: "/pathName",
+                    element: <Comp />
+                },
+                {
+                    path: "/pathName2",
+                    element: <Comp2 />
+                },
+        ]
+    },
+])
+
+**IN THE PARENT OF THE CHILDREN** i.e App.jsx in this case, import and render the children as 'Outlet':
+
+import { Outlet } from 'react-router-dom'
+
+return(<>
+    <navbar/>
+    <Outlet/>
+</>)
+
+NB: the Outlet will the ONE current routed child (This is usually done in App.jsx since it combines the multiple comps to create the website layout)
+
+**HOW TO NAVIGATE TO A PAGE ONCLICK OF A LINK**
+
+<a href="/pathName2">click to navigate</a>
+
+now from any component that is in the parent comp i.e App.jsx, or a child of an element in the App.jxs, will be able to use this Outlet children to navigate to them
+
+using the Link tag provided by ReactRouter:
+
+using <a></a> anchor tags defaultley refresh the page, so you'd rather use the Link tag to navigate on click.
+1.import the Link property first
+import {Link} from 'react-router-dom'
+
+
+<li><Link to="/pathName2" >About</Link></li>
+
+NB:Now it'll not do the refresh thingy, but it is still technically an achor tag just behaving differently
+
+***useNavigate Hook***::(navigating the user automatically/programatically without the use of a navbar or an oncClick achor tag event on a link, maybe navigate the user based on a condition or so...)
+
+1.first import the useNavigate() where you'll use it;
+2. assign is to a variable you'll use to call the function to pass the path
+
+import { Link, useNavigate } from "react-router-dom"
+
+const navigateToAbout = useNavigate();
+
+function go(){
+    navigateToAbout('/pathName2',{state: {}})
+}
+
+return <button oncClick={go}>Go To About</button>
+
+//INLINE USE:
+return <button oncClick={() => navigateToAbout('/pathName2')}>Go To About</button>
+
+**with useNavigate**...YOU CAN PASS STATE i.e some data you wanna use that can be accessed by the target path element
+
+1.inside the element/comp we're navigating to, import useLocation Hook, which you will use to access that state/passed data;
+
+import {useLocation} from 'react-router-dom'
+
+const routerLocation = useLocation();
+
+NB: routerLocation will return an object{} that includes the property you passed so you can access It
+***This property/data is saved in the broswer, even if you refresh the browser it'll stay there, BUT It is only passed in when you navigate to the target page using specifically routerLocation object, so if you maybe navigate to the page by editing the browser url/path directly, the data will not be passed, so when working with passing the data through the useLocation, ALWAYS account for if it is not defined;
+
+***THIS IS USED TO MAKE YOUR PAGE KEEP ITS DATA SO THAT WHEN YOU SWITCH BETWEEN PAGES IT LOADS FASTER WITHOUT HAVING TO LOAD ALL ITS PAGE DATA AGAIN***
+//////////////////////////////////////////////////////////////
+
+MODERN REACT ROUTER, CHILDREN, USELOCATION, USENAVIGATE,LAYOUT, OUTLET:
+
+Got you 👍 Let’s break down **React Router** and all those things step by step in a clear way.
+
+---
+
+## 🔹 What is React Router?
+
+React Router is a **library** that lets you create **multi-page experiences** in React apps without reloading the page. It does this using the **History API** in the browser.
+
+Instead of the whole page reloading when you go from `/about` to `/contact`, React Router just swaps components in place depending on the current **URL path**.
+
+---
+
+## 🔹 Core Concepts
+
+### 1. **Routes**
+
+A `Route` maps a **URL path** to a **React component**.
+
+```jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./Home";
+import About from "./About";
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} /> 
+        <Route path="/about" element={<About />} /> 
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+* When URL is `/`, `<Home />` shows.
+* When URL is `/about`, `<About />` shows.
+
+---
+
+### 2. **Navigation (`useNavigate`)**
+
+Instead of `<a>` tags (which reload the page), React Router gives us `useNavigate`.
+
+```jsx
+import { useNavigate } from "react-router-dom";
+
+function Home() {
+  const navigate = useNavigate();
+
+  return (
+    <div>
+      <h1>Home</h1>
+      <button onClick={() => navigate("/about")}>Go to About</button>
+    </div>
+  );
+}
+```
+
+➡ Clicking the button changes URL to `/about` **without refreshing**.
+
+---
+
+### 3. **Location (`useLocation`)**
+
+`useLocation` gives info about the current URL (pathname, search params, state).
+
+```jsx
+import { useLocation } from "react-router-dom";
+
+function About() {
+  const location = useLocation();
+
+  return (
+    <div>
+      <h1>About</h1>
+      <p>Current path: {location.pathname}</p>
+    </div>
+  );
+}
+```
+
+If URL is `/about?user=123`,
+`location.search` → `"?user=123"`
+
+---
+
+### 4. **Nested Routes & Children**
+
+You can nest routes inside each other with `children`.
+Example: `/dashboard` and `/dashboard/profile`.
+
+```jsx
+import Dashboard from "./Dashboard";
+import Profile from "./Profile";
+import Settings from "./Settings";
+
+<Routes>
+  <Route path="/dashboard" element={<Dashboard />}>
+    <Route path="profile" element={<Profile />} />
+    <Route path="settings" element={<Settings />} />
+  </Route>
+</Routes>
+```
+
+Inside `Dashboard`, you use `<Outlet />` to render the child routes:
+
+```jsx
+import { Outlet } from "react-router-dom";
+
+function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <Outlet /> {/* Profile or Settings will show here */}
+    </div>
+  );
+}
+```
+
+---
+
+### 5. **Layout Routes**
+
+A Layout is just a component (like a template) that wraps other pages.
+
+Example: A layout with a **navbar + footer** that appears on every page.
+
+```jsx
+function Layout() {
+  return (
+    <div>
+      <nav>Navbar</nav>
+      <Outlet /> {/* Child pages render here */}
+      <footer>Footer</footer>
+    </div>
+  );
+}
+
+<Routes>
+  <Route path="/" element={<Layout />}>
+    <Route index element={<Home />} />  {/* default child */}
+    <Route path="about" element={<About />} />
+    <Route path="contact" element={<Contact />} />
+  </Route>
+</Routes>
+```
+
+Now all pages (`/`, `/about`, `/contact`) share the same **Layout**.
+
+---
+
+### 6. **Other Hooks**
+
+* `useParams()` → Get route params (e.g., `/users/:id`)
+* `useSearchParams()` → Manage query strings (`?sort=asc`)
+* `useNavigationType()` → Detect if user navigated via back/forward button
+
+---
+
+✅ **In short:**
+
+* `BrowserRouter` → wraps app, controls history.
+* `Routes` → define mapping between paths and components.
+* `Route` → one path-to-component rule.
+* `useNavigate` → programmatic navigation.
+* `useLocation` → info about current URL.
+* `Outlet` → where child/nested routes render.
+* Layout = reusable wrapper with header/footer etc.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Perfect 🚀 Let’s build a **mini example project** with React Router where we use everything:
+
+* Home + About pages
+* A Dashboard with nested pages (Profile + Settings)
+* A Layout with a Navbar + Footer
+* `useNavigate`, `useLocation`, and `useParams` in action
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+ ├─ App.jsx
+ ├─ Layout.jsx
+ ├─ pages/
+ │   ├─ Home.jsx
+ │   ├─ About.jsx
+ │   ├─ Dashboard.jsx
+ │   ├─ Profile.jsx
+ │   ├─ Settings.jsx
+ │   └─ User.jsx
+```
+
+---
+
+## 🔹 App.jsx
+
+```jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./Layout";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import User from "./pages/User";
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Layout wraps all pages */}
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} /> {/* default child */}
+          <Route path="about" element={<About />} />
+
+          {/* Nested routes inside Dashboard */}
+          <Route path="dashboard" element={<Dashboard />}>
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+
+          {/* Example of route with params */}
+          <Route path="user/:id" element={<User />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+---
+
+## 🔹 Layout.jsx
+
+```jsx
+import { Link, Outlet } from "react-router-dom";
+
+export default function Layout() {
+  return (
+    <div>
+      <nav style={{ padding: "10px", background: "#eee" }}>
+        <Link to="/">Home</Link> |{" "}
+        <Link to="/about">About</Link> |{" "}
+        <Link to="/dashboard">Dashboard</Link>
+      </nav>
+
+      <main style={{ padding: "20px" }}>
+        <Outlet /> {/* child pages render here */}
+      </main>
+
+      <footer style={{ padding: "10px", background: "#eee" }}>
+        © 2025 My Site
+      </footer>
+    </div>
+  );
+}
+```
+
+---
+
+## 🔹 Home.jsx
+
+```jsx
+import { useNavigate } from "react-router-dom";
+
+export default function Home() {
+  const navigate = useNavigate();
+
+  return (
+    <div>
+      <h1>Home</h1>
+      <button onClick={() => navigate("/about")}>Go to About</button>
+      <button onClick={() => navigate("/user/42")}>View User 42</button>
+    </div>
+  );
+}
+```
+
+---
+
+## 🔹 About.jsx
+
+```jsx
+import { useLocation } from "react-router-dom";
+
+export default function About() {
+  const location = useLocation();
+
+  return (
+    <div>
+      <h1>About Page</h1>
+      <p>Current path: {location.pathname}</p>
+    </div>
+  );
+}
+```
+
+---
+
+## 🔹 Dashboard.jsx
+
+```jsx
+import { Link, Outlet } from "react-router-dom";
+
+export default function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <nav>
+        <Link to="profile">Profile</Link> |{" "}
+        <Link to="settings">Settings</Link>
+      </nav>
+
+      <div style={{ marginTop: "20px" }}>
+        <Outlet /> {/* Profile or Settings show here */}
+      </div>
+    </div>
+  );
+}
+```
+
+---
+
+## 🔹 Profile.jsx
+
+```jsx
+export default function Profile() {
+  return <h2>User Profile</h2>;
+}
+```
+
+---
+
+## 🔹 Settings.jsx
+
+```jsx
+export default function Settings() {
+  return <h2>Account Settings</h2>;
+}
+```
+
+---
+
+## 🔹 User.jsx (with Params)
+
+```jsx
+import { useParams } from "react-router-dom";
+
+export default function User() {
+  const { id } = useParams();
+  return <h1>User Page - ID: {id}</h1>;
+}
+```
+NB: you can only pass strings to useParams, so if its not a string, u stringify it first:
+navigate(`/product/${encodeURIComponent(JSON.stringify(myObject))}`);
+---
+  const myObject = JSON.parse(decodeURIComponent(product));
+
+✅ Now you have:
+
+* `/` → Home
+* `/about` → About
+* `/dashboard` → Dashboard (with nested pages)
+* `/dashboard/profile` → Profile
+* `/dashboard/settings` → Settings
+* `/user/42` → Dynamic user page
+
+---
+
+/////////////////////////PASSING DATA WITH USENAVIGATE....ACCESS IT WITH USELOCATION////////////////////
+
+Great question 🔥 this is where **`state`** comes in with React Router.
+
+You can pass extra data when navigating with `useNavigate`, and then read that data with `useLocation`.
+
+---
+
+## 🔹 Passing data with `useNavigate`
+
+```jsx
+import { useNavigate } from "react-router-dom";
+
+export default function Home() {
+  const navigate = useNavigate();
+
+  const goToAbout = () => {
+    navigate("/about", {
+      state: { user: "Lisakhanya", age: 20 }
+    });
+  };
+
+  return (
+    <div>
+      <h1>Home</h1>
+      <button onClick={goToAbout}>Go to About with Data</button>
+    </div>
+  );
+}
+```
+
+Here we pass an object `{ user: "Lisakhanya", age: 20 }` as **state**.
+
+---
+
+## 🔹 Receiving data with `useLocation`
+
+```jsx
+import { useLocation } from "react-router-dom";
+
+export default function About() {
+  const location = useLocation();
+  const { user, age } = location.state || {}; // fallback in case no state
+
+  return (
+    <div>
+      <h1>About Page</h1>
+      <p>User: {user}</p>
+      <p>Age: {age}</p>
+    </div>
+  );
+}
+```
+
+---
+
+✅ Output if you clicked the button:
+
+```
+User: Lisakhanya
+Age: 20
+```
+
+---
+
+⚡ Important Notes:
+
+1. `state` is **not visible in the URL** (unlike query params).
+2. If you refresh the page, the state is lost (because it’s stored in memory, not in the URL).
+3. Use `query params` (`useSearchParams`) if you want the data to persist in the URL.
+///////////////////////////////////////////////////
+Exactly ✅ — that’s how `state` works in React Router:
+
+* **`state` lives only in memory**.
+* If you refresh the page, `location.state` becomes `undefined`.
+
+So if your page **relies entirely on state**, you should **always check if it exists** and handle the missing case, like redirecting to `/`:
+
+---
+
+### Example pattern
+
+```jsx
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
+export default function About() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, age } = location.state || {};
+
+  // Redirect if state is missing (e.g., page refreshed)
+  useEffect(() => {
+    if (!user) {
+      navigate("/",{state: {}}, { replace: true });//prevents the user from going back to the broken page with the back button.
+    }
+  }, [user, navigate]);
+
+  if (!user) return null; // optional fallback while redirecting
+
+  return (
+    <div>
+      <h1>About Page</h1>
+      <p>User: {user}</p>
+      <p>Age: {age}</p>
+    </div>
+  );
+}
+```
+
+* `replace: true` → prevents the user from going back to the broken page with the back button.
+* This way, your page never breaks if state is missing.
+
+---
+
+This is **the safe way to rely on `state`** without worrying about a refresh.
+
+If you want, I can show a **full mini example app** using this pattern for multiple pages with `state` and redirect fallback—it’s very practical. Do you want me to do that?
+////////////////////////////////USING USEPARAMS/////////////////////////
+Exactly ✅ but with one key difference: **how you pass it**. Let me clarify:
+
+---
+
+### 1️⃣ Using `state` (accessed via `useLocation`)
+
+```jsx
+navigate("/about", { state: { user: "Lisakhanya" } });
+```
+
+* Access on `/about` with:
+
+```jsx
+const { state } = useLocation();
+console.log(state.user); // "Lisakhanya"
+```
+
+* **Not visible in URL**, lost on refresh.
+
+---
+
+### 2️⃣ Using query params (accessed via `useSearchParams`)
+
+```jsx
+navigate("/about?user=Lisakhanya");
+```
+
+or dynamically:
+
+```jsx
+navigate(`/about?user=${user}`);
+```
+
+* Access on `/about` with:
+
+```jsx
+const [searchParams] = useSearchParams();
+console.log(searchParams.get("user")); // "Lisakhanya"
+```
+
+* **Visible in URL**, survives refresh.
+
+---
+
+### ✅ Key difference in passing:
+
+| Method       | How you pass data                      | Access method         | Survives refresh? |
+| ------------ | -------------------------------------- | --------------------- | ----------------- |
+| `state`      | `navigate("/about", { state: {...} })` | `useLocation().state` | ❌                 |
+| query params | `navigate("/about?user=abc")`          | `useSearchParams()`   | ✅                 |
+
+---
+
+💡 **Rule of thumb:**
+
+* Use **state** for temporary in-memory data.
+* Use **query params** for persistent data you might refresh, bookmark, or share in a URL.
+
+---
+
+If you want, I can make a **tiny snippet showing both at once** and how to safely access whichever is available. It’s a really useful pattern. Do you want me to do that?

@@ -1,0 +1,417 @@
+<!-- @format -->
+
+FRAMER MOTION:
+
+:::: npm install framer-motion
+
+\*\*whenever you use it, you import { motion } from "framer-motion",
+prepend the tag with motion, <motion.div>
+///////////////////////////////////
+
+****\*\*****\*****\*\*****BASICS********\*\*\*\*********\*\*\*********\*\*\*\*********
+
+REGULAR FRAMER MOTION PROPS, called variants:
+
+<motion.div
+initial={{
+								rotate: "0deg",
+							}}
+animate={{
+								rotate: "180deg",
+							}}
+transition={{
+								duration: 1.5,
+								type: "spring",
+							}}
+exit={{
+								rotate: "0deg",
+							}}
+className="w-40 h-40 bg-black" ></motion.div>
+
+////////////
+initial={{}}, you can add your styles here, or logic, which happens when the element mounts.
+
+transition={{}}, add transitioning styles like duration, animation-timing-function, like ease: "ease-in-out", NB: type:"spring" is adds a smooth effect to transitions
+
+animate={{}}, add an animation that'll happen after the component has mounted, can be keyframes etc.
+
+exit={{}}, you can add styles/logic that must happen before unmounting the element, :::the comp/element, that'll be unmounted must be wrapped in <AnimatePresence><element/></AnimatePresence>, which should be imported first with, import { motion, AnimatePresence } from "framer-motion";
+E.G:
+<AnimatePresence mode="" >
+{isVisible && (
+<motion.div
+initial={{
+								rotate: "0deg",
+							}}
+animate={{
+								rotate: "180deg",
+							}}
+transition={{
+								duration: 1.5,
+								type: "spring",
+							}}
+exit={{
+								rotate: "0deg",
+							}}
+className="w-40 h-40 bg-black" ></motion.div>
+)}
+</AnimatePresence>
+
+NB: AnimatePresence has mode: "popLayout" = removes the element from the dom before exit animation., "sync" = default, "wait" = Waits for exit to finish first.....
+NB: When one element unmounts, and the other moves to its place abruptly with no transition, using just, "layout", can add transitioning of that movement to be smooth
+
+E.G:
+
+    		<div className="grid h-[250px] place-content-center">
+    			<motion.button
+    				layout
+    				onClick={() => setIsVisible(!isVisible)}
+    				className="example-btn"
+    			>
+    				Show/Hide
+    			</motion.button>
+    			<AnimatePresence mode="popLayout">
+    				{isVisible && (
+    					<motion.div
+    						initial={{
+    							rotate: "0deg",
+    							scale: 0,
+    						}}
+    						animate={{
+    							rotate: "180deg",
+    							scale: 1,
+    						}}
+    						transition={{
+    							duration: 1.5,
+    							type: "spring",
+    						}}
+    						exit={{
+    							rotate: "0deg",
+    							scale: 0,
+    						}}
+    						className="w-40 h-40 bg-black"
+    					></motion.div>
+    				)}
+    			</AnimatePresence>
+    		</div>
+
+//////////////////////////////////////
+adding KEYFRAMES to your animation={{
+	y:[0, 20, 50, 0]
+}}....when the element mounts, start from 0 translate y-axis to 20px, to 0 the back to zero:
+
+NB: keyframes dont work with type: "spring"
+
+to add KEYFRAME PERCENTAGES: in the transition={{times: [0, 0.25, 0.5, 1]}}, also add an array of the percentages ranging from 0 to 1, ensure they sync with the keyframes array.
+
+E.G
+animate={{
+								rotate: "180deg",
+								scale: 1,
+								y: [0, 20, -20, 10, 0],
+								backgroundColor: ["#000", "#222", "#FFF", "#222", "#000"],
+							}}
+transition={{
+								duration: 3,
+								ease: "backInOut",
+								times: [0, 0.25, 0.5, 0.75, 1],
+							}}
+
+////////////////////////////////////////////////////////////////////////////////
+
+******\*\*******\*\*\*******\*\*******GESTURES********\*\*\*\*********\*********\*\*\*\*********
+
+GESTURES are like CSS pseudo classes, like hover: active: etc:
+
+E.G:
+       <div className="grid place-content-center h-[250px]">
+			<motion.button
+				whileHover={{
+					scale: 2,
+				}}
+				whileTap={{
+					scale: 0.95,
+					rotate: "2.5deg",
+				}}
+				transition={{
+					duration: 2,
+					ease: "easeInOut",
+				}}
+				className="example-btn"
+			>
+				Click Me!
+			</motion.button>
+		</div>
+
+////////////////////////////////////
+
+MOTIONCONFIG = context provider, that provides style to many elements:
+NB: Say you have same transition for multiple elements, instead of adding transition={{duration: 2}} to each element, just wrap them with the <MotionConfig></MotionConfig>, and all those elements will have same transition...........first import MotionConfig ofcourse:
+
+E.G:
+
+        <div className="grid place-content-center h-[250px]">
+			<MotionConfig
+				transition={{
+					duration: 0.2,
+					ease: "easeInOut",
+				}}
+			>
+				<motion.button
+					whileHover={{
+						scale: 1.4,
+					}}
+					whileTap={{
+						scale: 0.95,
+						rotate: "2.5deg",
+					}}
+					className="example-btn"
+				>
+					Click Me!
+				</motion.button>
+				<motion.button
+					whileHover={{
+						scale: 1.15,
+					}}
+					whileTap={{
+						scale: 0.85,
+						rotate: "-2.5deg",
+					}}
+					className="example-btn bg-red-500 mt-4"
+				>
+					Click Me!
+				</motion.button>
+			</MotionConfig>
+		</div>
+
+///////////////////////////////////////////////////////////
+**********************ANIMATIONCONTROLS*************************************
+variants = kinda style variables that you reference, for example onclick of a button, you call a specific style reference
+...variants={{initial:{rotate:"0deg", flip:{rotate:"360deg"}}}}
+...mostly used with ANIMATIONCONTROLS though:
+
+    <motion.div
+				variants={{
+					initial: {
+						rotate: "0deg",
+					},
+					flip: {
+						rotate: "360deg",
+					},
+				}}
+				animate="flip"
+				initial="initial"
+				className="w-40 bg-black h-40"
+			></motion.div>
+
+			//so you create your variants, set initial  to the var 'initial', then animate to the var 'flip':
+			NB: you can create your variants as an outside object too, then set variant={outsideObject} like this:
+			const boxVariants = {
+ 					 hidden: { opacity: 0 },
+ 					 visible: { opacity: 1 },
+				};
+
+				<motion.div
+ 					 variants={boxVariants}
+ 					 initial="hidden"
+ 					 animate="visible"
+				/>
+/////////////
+USEANIMATIONCONTROLS example :-
+
+/** @format */
+
+import React from "react";
+import { motion, useAnimationControls } from "framer-motion";
+export default function AnimationControls() {
+	const flipControls = useAnimationControls();
+	function handleClick() {
+		flipControls.start("flip");
+	}
+
+	return (
+		<div className="grid place-content-center h-[250px]">
+			<motion.button onClick={handleClick} className="example-btn my-4 px-8">
+				Flip it!
+			</motion.button>
+			<motion.div
+				variants={{
+					initial: {
+						rotate: "0deg",
+					},
+					flip: {
+						rotate: "360deg",
+					},
+				}}
+				animate={flipControls}
+				initial="initial"
+				className="w-40 bg-black h-40"
+			></motion.div>
+		</div>
+	);
+}
+
+///////////////////////////////////////////////////////////////
+
+***************************VIEW-BASED ANIMATIONS*******************************
+USES: whileInView={{your styles}},also has a hook, with a boolean value, true when inView, false when not in view:
+
+import the hook:
+E.G : 
+
+      /** @format */
+
+import React, { useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+export default function ViewBasedAnimations() {
+	const ref = useRef(null);
+	const isInView = useInView(ref, { once: true });
+
+	useEffect(() => {
+		console.log(isInView);
+	}, [isInView]);
+
+	return (
+		<>
+			<div className=" h-[150vh]" />
+			<motion.div
+				initial={{ opacity: 0 }}
+				whileInView={{ opacity: 1 }}
+				transition={{ duration: 1 }}
+				className="bg-black h-screen my-4"
+			>
+				Click Me!
+			</motion.div>
+			<div
+				ref={ref}
+				className="h-screen my-4 transition-all duration-1000"
+				style={{ background: isInView ? "blue" : "black" }}
+			></div>
+		</>
+	);
+}
+///useInView(element, {once, means the value will only change once, so your animation will only happen once})
+
+/////////////////////////////////////////////////////////////////
+
+********************************SCROLL-BASED ANIMATIONS*******************************
+
+/** @format */
+
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import React, { useEffect } from "react";
+
+export default function ScrollBasedAnimations() {
+	const { scrollYProgress } = useScroll();
+	//scrollYProgress is a MotionValue, which means you cant use/do calculations with it, it dynamically changes though, as you scroll, so you can create changes of a variable based on it, using the useTransform hook
+
+	//NB: you can get the current value of a MotionValue in Framer Motion using its .get() method. e.g console.log(scrollYProgress.get());
+
+	//Framer Motion gives you a .on("change") method to listen for updates to a MotionValue:
+
+	useEffect(() => {
+		const unsubscribe = scrollYProgress.on("change", (latestValue) => {
+			console.log("scrollYProgress:", latestValue);
+		});
+
+		return () => unsubscribe(); // Cleanup listener
+	}, [scrollYProgress]);
+
+	const background = useTransform(
+		scrollYProgress,
+		[0, 0.5, 1],
+		["#000", "#3b82f6", "#FFF"]
+	);
+	//background value, changes based on the MotionValue i.e scrollYProgress, [MV start ranges from zero to one], [var values, must correspond to the MV range you set, just like setting keyframes]...this is how you dynamically change a var value based on MotionValue like scrollYProgress
+
+	const scaleXSpring = useSpring(scrollYProgress);
+	//usePring hook, springs the current value of the var, as the var increases to a certain value, it'll go smoothly go over that value be4 the correct, same as when the var value decreases, SPRINGY
+
+	return (
+		<div className="p-4">
+			<motion.div
+				style={{ scaleX: scaleXSpring, background: background }}
+				className="bg-blue-500 origin-left sticky top-0 w-full h-5"
+			></motion.div>
+			{/* NB: you can shorthand scaleX to scaleXSpring but only if, scaleXSpring value is named same as scaleX */}
+			{Array.from({ length: 10 }).map((_, index) => (
+				<p key={index} className="py-4">
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime quis
+					eligendi a esse, inventore earum suscipit numquam beatae deleniti! Ad
+					sunt ratione modi reprehenderit blanditiis, sint ut rerum recusandae
+					alias nostrum adipisci exercitationem, a voluptates minus non autem
+					aut. Dicta consequatur voluptate corrupti perspiciatis amet, odio
+					soluta corporis praesentium deserunt!
+				</p>
+			))}
+		</div>
+	);
+}
+
+
+//////////////////////////////////////////////////////////////////////////						
+								FRAMER DOCS
+/
+////////////////////////////////////////////////////////////////////
+*****SECCTION SCROLL ANIMATION*******************8
+
+/** @format */
+
+import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+
+const sectionsData = [
+	{ color: "#ff6b6b", text: "Section 1" },
+	{ color: "#4ecdc4", text: "Section 2" },
+	{ color: "#1a535c", text: "Section 3" },
+];
+
+export default function App() {
+	const [current, setCurrent] = useState(0);
+	const [scrolling, setScrolling] = useState(false); // prevent rapid scroll
+
+	const handleScroll = (e) => {
+		if (scrolling) return;
+		setScrolling(true);
+
+		if (e.deltaY > 0 && current < sectionsData.length - 1) {
+			setCurrent(current + 1);
+		} else if (e.deltaY < 0 && current > 0) {
+			setCurrent(current - 1);
+		}
+
+		setTimeout(() => setScrolling(false), 900); // wait for animation
+	};
+
+	useEffect(() => {
+		window.addEventListener("wheel", handleScroll, { passive: true });
+		return () => window.removeEventListener("wheel", handleScroll);
+	}, [current, scrolling]);
+
+	return (
+		<div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+			{sectionsData.map((section, index) => (
+				<motion.div
+					key={index}
+					initial={{ top: "100%" }}
+					animate={{ top: index === current ? "0%" : "100%" }}
+					transition={{ duration: 0.8, ease: "easeInOut" }}
+					style={{
+						position: "absolute",
+						width: "100%",
+						height: "100vh",
+						backgroundColor: section.color,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						fontSize: "3rem",
+						color: "#fff",
+						zIndex: index === current ? 10 : 0,
+					}}
+				>
+					{section.text}
+				</motion.div>
+			))}
+		</div>
+	);
+}
