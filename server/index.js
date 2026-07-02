@@ -30,9 +30,9 @@ mongoose
 	.then(() => {
 		console.log("MongoDB connected");
 
-		app.listen(3000, "localhost", () =>
-			console.log("Server running on port 3000"),
-		);
+		// app.listen(3000, "localhost", () =>
+		// 	console.log("Server running on port 3000"),
+		// );
 	})
 	.catch((err) => console.log(err));
 
