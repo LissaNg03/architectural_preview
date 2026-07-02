@@ -7,8 +7,6 @@ const cors = require("cors");
 require("dotenv").config();
 const verifyToken = require("./middleware/verifyToken");
 
-const PORT = process.env.PORT || 3000;
-
 //ROUTES
 const index_routes = require("./routes/public_routes/index_routes");
 const admin_routes = require("./routes/admin_routes/admin_routes");
@@ -47,3 +45,5 @@ app.use((err, req, res, next) => {
 	console.error(err);
 	res.status(500).json({ message: "Server Error" });
 });
+
+module.exports = app;
