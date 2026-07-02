@@ -2,7 +2,7 @@
 
 const allowedOrigins = [
 	"https://architecturalpreview.netlify.app",
-	"http://127.0.0.1:5173",
+	"https://architectural-preview.vercel.app",
 	"http://localhost:5173",
 	"http://localhost:3500",
 	"http://127.0.0.1:3500",

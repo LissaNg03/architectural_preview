@@ -7,7 +7,7 @@ import Footer from "../../components/Footer";
 import { DataContext } from "../../App";
 import axios from "./api/axios";
 import { setAccessToken } from "./context/tokenStore";
-
+const API_URL = import.meta.env.VITE_BASE_URL;
 const PASSWORD_REGEX =
 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-])[A-Za-z\d@$!%*?&.#_-]{8,20}$/;
 
@@ -51,7 +51,10 @@ export default function Credentials() {
 		try {
 			setFormStatus("Updating...");
 
-			const response = await axios.post("/api/admin/home/credentials", inputs);
+			const response = await axios.post(
+				API_URL + "/api/admin/home/credentials",
+				inputs,
+			);
 
 			setFormStatus("Updated Successfully");
 			setAccessToken(null);

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { setAccessToken } from "./context/tokenStore";
 import { DataContext } from "../../App";
+const API_URL = import.meta.env.VITE_BASE_URL;
 export default function AdminLogIn() {
 	const { adminData } = useContext(DataContext);
 	const navigate = useNavigate();
@@ -16,10 +17,10 @@ export default function AdminLogIn() {
 
 		const formData = new FormData(e.target);
 
-		console.log(formData.get("username"));
+		// console.log(formData.get("username"));
 
 		try {
-			const response = await axios.post("/api/admin/login", {
+			const response = await axios.post(API_URL + "/api/admin/login", {
 				username: formData.get("username"),
 				email: formData.get("email"),
 				password: formData.get("password"),
@@ -31,8 +32,8 @@ export default function AdminLogIn() {
 
 			navigate("/admin/home", { replace: true });
 
-			console.log("accessToken", accessToken);
-			console.log(response);
+			// console.log("accessToken", accessToken);
+			// console.log(response);
 		} catch (error) {
 			console.error(error);
 			console.error(error.data);

@@ -12,6 +12,7 @@ import EditDesign from "./pages/admin/EditDesign";
 import ProtectedRoute from "./pages/admin/context/ProtectedRoute";
 import Credentials from "./pages/admin/Credentials";
 export const DataContext = createContext();
+const API_URL = import.meta.env.VITE_BASE_URL;
 function App() {
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth);
 	const [innerHeight, setInnerHeight] = useState(window.innerHeight);
@@ -22,7 +23,7 @@ function App() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const res = await fetch("/api");
+				const res = await fetch(`${API_URL}/api`);
 
 				if (res.ok) {
 					const data = await res.json();

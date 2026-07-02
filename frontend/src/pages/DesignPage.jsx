@@ -7,7 +7,7 @@ import DesignFloorplan from "../components/DesignFloorplan";
 import DesignVideo from "../components/DesignVideo";
 import Footer from "../components/Footer";
 import PageLoader from "../components/PageLoader";
-
+const API_URL = import.meta.env.VITE_BASE_URL;
 export default function DesignPage({ scrollY, innerHeight, innerWidth }) {
 	const navigate = useNavigate();
 	const [design, setDesign] = useState(null);
@@ -19,7 +19,7 @@ export default function DesignPage({ scrollY, innerHeight, innerWidth }) {
 			try {
 				setLoading(true);
 
-				const res = await fetch(`/api/design/${id}`);
+				const res = await fetch(`${API_URL}/api/design/${id}`);
 				const data = await res.json();
 
 				setDesign(data);

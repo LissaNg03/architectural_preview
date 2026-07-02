@@ -7,6 +7,7 @@ import { DataContext } from "../../App";
 import { getAccessToken, setAccessToken } from "./context/tokenStore";
 import axios from "./api/axios";
 import { useNavigate } from "react-router-dom";
+const API_URL = import.meta.env.VITE_BASE_URL;
 export default function AdminPage() {
 	const { adminData, designs } = useContext(DataContext);
 	const navigate = useNavigate();
@@ -48,7 +49,7 @@ export default function AdminPage() {
 	useEffect(() => {
 		async function fetchDefaultData() {
 			try {
-				const res = await axios.get("api/admin/home");
+				const res = await axios.get(API_URL + "/api/admin/home");
 
 				const _data = res.data;
 
@@ -129,7 +130,7 @@ export default function AdminPage() {
 
 	async function handleLogOut() {
 		try {
-			const response = await axios.post("/api/admin/logout");
+			const response = await axios.post(API_URL + "/api/admin/logout");
 			setAccessToken(null);
 			navigate("/admin/login", { replace: true });
 		} catch (error) {

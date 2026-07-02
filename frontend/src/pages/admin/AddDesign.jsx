@@ -6,6 +6,7 @@ import { useState } from "react";
 import { DataContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeftCircle } from "react-icons/fi";
+const API_URL = import.meta.env.VITE_BASE_URL;
 export default function AddDesign({ business_name, existing, id }) {
 	const { designs, adminData } = useContext(DataContext);
 	const navigate = useNavigate();
@@ -127,8 +128,8 @@ export default function AddDesign({ business_name, existing, id }) {
 
 		const upload = await fetch(
 			existingDesign
-				? "/api/admin/home/edit_designs/edit/" + existingDesign._id
-				: "/api/admin/home/add_design",
+				? API_URL + "/api/admin/home/edit_designs/edit/" + existingDesign._id
+				: API_URL + "/api/admin/home/add_design",
 			{
 				method: existingDesign ? "PUT" : "POST",
 				body: formData,
