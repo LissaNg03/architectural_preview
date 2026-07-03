@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 require("dotenv").config();
 const verifyToken = require("./middleware/verifyToken");
+const connectDB = require("./utils/connectDB");
 
 //ROUTES
 const index_routes = require("./routes/public_routes/index_routes");
@@ -25,16 +26,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("./public"));
 
 //CONNECT TO DATABASE
-mongoose
-	.connect(process.env.MONGO_URI)
-	.then(() => {
-		console.log("MongoDB connected");
 
-		// app.listen(3000, "localhost", () =>
-		// 	console.log("Server running on port 3000"),
-		// );
-	})
-	.catch((err) => console.log(err));
+app.use(async (req, res, next) => {
+	try {
+		await connectDB();
+		next();
+	} catch (err) {
+		next(err);
+	}
+});
+// mongoose
+// 	.connect(process.env.MONGO_URI)
+// 	.then(() => {
+// 		console.log("MongoDB connected");
+
+// 	app.listen(3000, "localhost", () =>
+// 		console.log("Server running on port 3000"),
+// 	);
+// })
+// .catch((err) => console.log(err));
 
 //ADMIN ROUTES
 app.get("/api/refresh", refreshTokenController);
