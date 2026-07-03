@@ -20,11 +20,17 @@ export default function AdminLogIn() {
 		// console.log(formData.get("username"));
 
 		try {
-			const response = await axios.post(API_URL + "/api/admin/login", {
-				username: formData.get("username"),
-				email: formData.get("email"),
-				password: formData.get("password"),
-			});
+			const response = await axios.post(
+				API_URL + "/api/admin/login",
+				{
+					username: formData.get("username"),
+					email: formData.get("email"),
+					password: formData.get("password"),
+				},
+				{
+					withCredentials: true,
+				},
+			);
 
 			const accessToken = response.data.accessToken;
 
