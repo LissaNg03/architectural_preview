@@ -189,6 +189,9 @@ export default function AdminPage() {
 		formData.append("email_secret", inputs.email_secret);
 
 		const upload = await fetch("/api/admin/home", {
+			headers: {
+				Authorization: `Bearer ${getAccessToken()}`,
+			},
 			method: "POST",
 			body: formData,
 		});
