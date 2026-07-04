@@ -130,7 +130,13 @@ export default function AdminPage() {
 
 	async function handleLogOut() {
 		try {
-			const response = await axios.post(API_URL + "/api/admin/logout");
+			const response = await axios.post(
+				API_URL + "/api/admin/logout",
+				{},
+				{
+					withCredentials: true,
+				},
+			);
 			setAccessToken(null);
 			navigate("/admin/login", { replace: true });
 		} catch (error) {
