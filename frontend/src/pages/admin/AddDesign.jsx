@@ -133,6 +133,7 @@ export default function AddDesign({ business_name, existing, id }) {
 			{
 				method: existingDesign ? "PUT" : "POST",
 				body: formData,
+				credentials: "include",
 			},
 		);
 

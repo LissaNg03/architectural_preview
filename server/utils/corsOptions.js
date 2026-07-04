@@ -7,7 +7,7 @@ const corsOptions = {
 		if (!origin || allowedOrigins.includes(origin)) {
 			cb(null, true);
 		} else {
-			cb(new Error("Not allowed by CORS"));
+			cb(new Error(`${origin} Is Not allowed by CORS`));
 		}
 	},
 	credentials: true,
