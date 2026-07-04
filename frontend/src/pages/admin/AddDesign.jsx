@@ -6,6 +6,7 @@ import { useState } from "react";
 import { DataContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeftCircle } from "react-icons/fi";
+import { getAccessToken } from "./context/tokenStore";
 const API_URL = import.meta.env.VITE_BASE_URL;
 export default function AddDesign({ business_name, existing, id }) {
 	const { designs, adminData } = useContext(DataContext);
@@ -134,6 +135,9 @@ export default function AddDesign({ business_name, existing, id }) {
 				method: existingDesign ? "PUT" : "POST",
 				body: formData,
 				credentials: "include",
+				headers: {
+					Authorization: `Bearer ${getAccessToken()}`,
+				},
 			},
 		);
 
