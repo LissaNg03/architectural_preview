@@ -7,11 +7,25 @@ import { DataContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeftCircle } from "react-icons/fi";
 import { getAccessToken } from "./context/tokenStore";
+import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
+import axios from "./api/axios";
+import fetchDesign from "../../components/fetchDesign";
 const API_URL = import.meta.env.VITE_BASE_URL;
 export default function AddDesign({ business_name, existing, id }) {
 	const { designs, adminData } = useContext(DataContext);
+
 	const navigate = useNavigate();
-	const existingDesign = designs.find((d) => d._id === id);
+	const [existingDesign, setExistingDesign] = useState(null);
+
+	useEffect(() => {
+		if (existing) {
+			getDesign();
+			async function getDesign() {
+				const _design = await fetchDesign(id);
+				setExistingDesign(_design);
+			}
+		}
+	}, [id]);
 
 	const [formStatus, setFormStatus] = useState(
 		!existingDesign ? "Upload Design" : "Upload Changes",
@@ -72,87 +86,177 @@ export default function AddDesign({ business_name, existing, id }) {
 		});
 	}
 
+	const uploadWithProgress = async (
+		file,
+		resourceType,
+		label,
+		current,
+		total,
+	) => {
+		setFormStatus(`Uploading ${label} (${current}/${total})...`);
+
+		return uploadToCloudinary(false, file, resourceType);
+	};
+
 	async function uploadImg(e) {
 		e.preventDefault();
-		setFormStatus("Uploading...");
-		// console.clear();
-		// console.log(inputs);
-		// console.log(files);
 
-		const allFilesWithType = files.flatMap((item) => {
-			if (item.file.length > 1) {
-				return [
-					{
-						name: item.name,
-						file: item.file[0],
-					},
-					{
-						name: item.name,
-						file: item.file[1],
-					},
-				];
+		try {
+			setFormStatus("Verifying...");
+
+			const verifyToken = await axios.get(API_URL + "/api/admin/verify");
+
+			if (!verifyToken?.data?.valid) {
+				setFormStatus("Unauthorized");
+				return;
 			}
 
-			if (item.file.length === 1) {
-				return [
-					{
-						name: item.name,
-						file: item.file[0],
+			const getFile = (name) => files.find((f) => f.name === name)?.file ?? [];
+
+			const totalUploads = 8;
+
+			const thumbnail = getFile("thumbnail")[0]
+				? await uploadWithProgress(
+						getFile("thumbnail")[0],
+						"image",
+						"Thumbnail",
+						1,
+						totalUploads,
+					)
+				: null;
+
+			const video = getFile("video")[0]
+				? await uploadWithProgress(
+						getFile("video")[0],
+						"video",
+						"Video",
+						2,
+						totalUploads,
+					)
+				: null;
+
+			const floorPlans = await Promise.all(
+				getFile("floor_plans").map((file, index) =>
+					uploadWithProgress(
+						file,
+						"image",
+						`Floor Plan ${index + 1}`,
+						3 + index,
+						totalUploads,
+					),
+				),
+			);
+
+			const frontView = getFile("front_view")[0]
+				? await uploadWithProgress(
+						getFile("front_view")[0],
+						"image",
+						"Front View",
+						5,
+						totalUploads,
+					)
+				: null;
+
+			const leftView = getFile("left_view")[0]
+				? await uploadWithProgress(
+						getFile("left_view")[0],
+						"image",
+						"Left View",
+						6,
+						totalUploads,
+					)
+				: null;
+
+			const rightView = getFile("right_view")[0]
+				? await uploadWithProgress(
+						getFile("right_view")[0],
+						"image",
+						"Right View",
+						7,
+						totalUploads,
+					)
+				: null;
+
+			const backView = getFile("back_view")[0]
+				? await uploadWithProgress(
+						getFile("back_view")[0],
+						"image",
+						"Back View",
+						8,
+						totalUploads,
+					)
+				: null;
+
+			setFormStatus("Saving Design...");
+
+			const payload = {
+				...inputs,
+
+				video,
+				thumbnail,
+
+				floor_plans: floorPlans,
+
+				images: [
+					frontView && {
+						title: "front_view",
+						...frontView,
 					},
-				];
-			}
 
-			return []; // no files
-		});
+					leftView && {
+						title: "left_view",
+						...leftView,
+					},
 
-		// console.log(allFilesWithType);
+					rightView && {
+						title: "right_view",
+						...rightView,
+					},
 
-		const formData = new FormData();
+					backView && {
+						title: "back_view",
+						...backView,
+					},
+				].filter(Boolean),
+			};
 
-		formData.append("name", inputs.name);
-		formData.append("price", inputs.price);
-		formData.append("category", inputs.category);
-		formData.append("length", inputs.length);
-		formData.append("width", inputs.width);
-		formData.append("no_of_rooms", inputs.no_of_rooms);
-		formData.append("no_of_bathrooms", inputs.no_of_bathrooms);
-		formData.append("porch", inputs.porch);
-		formData.append("balcony", inputs.balcony);
-		formData.append("garage", inputs.garage);
-		formData.append("description", inputs.description);
+			const response = await fetch(
+				existingDesign
+					? `${API_URL}/api/admin/home/edit_designs/edit/${existingDesign._id}`
+					: `${API_URL}/api/admin/home/add_design`,
+				{
+					method: existingDesign ? "PUT" : "POST",
 
-		console.log(inputs);
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${getAccessToken()}`,
+					},
 
-		allFilesWithType.map((file) => {
-			formData.append(file.name, file.file);
-		});
+					body: JSON.stringify(payload),
 
-		const upload = await fetch(
-			existingDesign
-				? API_URL + "/api/admin/home/edit_designs/edit/" + existingDesign._id
-				: API_URL + "/api/admin/home/add_design",
-			{
-				method: existingDesign ? "PUT" : "POST",
-				body: formData,
-				credentials: "include",
-				headers: {
-					Authorization: `Bearer ${getAccessToken()}`,
+					credentials: "include",
 				},
-			},
-		);
+			);
 
-		const results = await upload.json();
+			const result = await response.json();
 
-		console.log(results);
-		setFormStatus(results.message);
+			setFormStatus(result.message);
 
-		setTimeout(() => {
-			setFormStatus("Upload Design");
-		}, 2000);
+			setTimeout(() => {
+				setFormStatus(existingDesign ? "Upload Changes" : "Upload Design");
+			}, 2000);
+		} catch (err) {
+			console.error(err);
+			console.error(err?.response?.data);
+			console.error(err?.response);
 
-		// console.log(results);
+			setFormStatus("Upload Failed");
+
+			setTimeout(() => {
+				setFormStatus(existingDesign ? "Upload Changes" : "Upload Design");
+			}, 2000);
+		}
 	}
-
 	return (
 		<div>
 			<header className="bg-global_navy header_common">

@@ -3,7 +3,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-
+import { getAccessToken } from "../../pages/admin/context/tokenStore";
+const API_URL = import.meta.env.VITE_BASE_URL;
+import axios from "../../pages/admin/api/axios";
 export default function Img_md({ design, delay = 0, admin }) {
 	const itemVariants = {
 		hidden: { opacity: 0, y: 20 },
@@ -21,19 +23,13 @@ export default function Img_md({ design, delay = 0, admin }) {
 		if (!del) return;
 
 		try {
-			const response = await fetch("/api/admin/home/edit_designs", {
-				headers: { "Content-Type": "application/json" },
-				method: "DELETE",
-				body: JSON.stringify({ design_id: design?._id }),
-			});
-
-			const deleted = await response.json();
-
-			alert(deleted.message);
-
+			const deleted = await axios.delete(
+				`${API_URL}/api/admin/home/edit_designs`,
+				{ data: { design_id: design._id } },
+			);
 			window.location.reload();
 		} catch (error) {
-			console.error("ERROR:", error);
+			console.error("ERROR:", error?.response?.data);
 		}
 	}
 

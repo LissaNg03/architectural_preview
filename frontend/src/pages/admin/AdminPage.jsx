@@ -8,10 +8,12 @@ import { getAccessToken, setAccessToken } from "./context/tokenStore";
 import axios from "./api/axios";
 import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_BASE_URL;
+import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 export default function AdminPage() {
 	const { adminData, designs } = useContext(DataContext);
 	const navigate = useNavigate();
 	const [defaultData, setDefaultData] = useState({});
+	const [uploadProgress, setUploadProgress] = useState(0);
 	const [formStatus, setFormStatus] = useState("Upload Changes");
 	const [files, setFiles] = useState([
 		{ name: "business_logo_img", file: [] },
@@ -52,7 +54,7 @@ export default function AdminPage() {
 				const res = await axios.get(API_URL + "/api/admin/home");
 
 				const _data = res.data;
-
+				// console.log("_data", _data);
 				setInputs((prev) =>
 					_data.adminData.length != 0
 						? {
@@ -152,58 +154,78 @@ export default function AdminPage() {
 
 	async function submitData(e) {
 		e.preventDefault();
-		setFormStatus("Uploading...");
 
-		const formData = new FormData();
+		try {
+			setFormStatus("Uploading...");
+			setUploadProgress(0);
 
-		files.map((file) => {
-			if (file.file[0]) {
-				formData.append(file.name, file.file[0]);
-			}
-		});
+			// Helper to find a selected file
+			const getFile = (name) =>
+				files.find((item) => item.name === name)?.file?.[0];
 
-		//BUSINESS NAME
-		formData.append("business_name", inputs.business_name);
-		//HERO DATA
-		formData.append("hero_bigger_text", inputs.hero_bigger_text);
-		formData.append("hero_smaller_text", inputs.hero_smaller_text);
-		formData.append("clients_estimate", inputs.clients_estimate);
-		formData.append("followers_estimate", inputs.followers_estimate);
-		formData.append("total_designs", inputs.total_designs);
+			const uploads = [
+				{
+					key: "business_logo",
+					file: getFile("business_logo_img"),
+				},
+				{
+					key: "hero_img",
+					file: getFile("hero_img"),
+				},
+				{
+					key: "who_we_are_img",
+					file: getFile("who_we_are_img"),
+				},
+			];
 
-		//WHO WE ARE DATA
-		formData.append("who_we_are_text", inputs.who_we_are_text);
+			let completedUploads = 0;
 
-		//WHAT WE OFFER DATA
-		formData.append("what_we_offer_text", inputs.what_we_offer_text);
-		formData.append("bullet_one", inputs.bullet_one);
-		formData.append("bullet_two", inputs.bullet_two);
-		formData.append("bullet_three", inputs.bullet_three);
+			const uploadedImages = {};
 
-		//SOCIALS
-		formData.append("tel_no", inputs.tel_no);
-		formData.append("email", inputs.email);
-		formData.append("tiktok", inputs.tiktok_link);
-		formData.append("facebook", inputs.facebook_link);
-		formData.append("whatsapp", inputs.whatsApp_number);
-		formData.append("email_secret", inputs.email_secret);
+			await Promise.all(
+				uploads.map(async ({ key, file }) => {
+					if (!file) return;
 
-		const upload = await fetch("/api/admin/home", {
-			headers: {
-				Authorization: `Bearer ${getAccessToken()}`,
-			},
-			method: "POST",
-			body: formData,
-		});
+					const result = await uploadToCloudinary(
+						true,
+						file,
+						"image",
+						(percent) => {},
+					);
 
-		const results = await upload.json();
+					uploadedImages[key] = result;
 
-		// console.log(results);
-		setFormStatus(results.message);
+					completedUploads++;
 
-		setTimeout(() => {
-			setFormStatus("Upload Changes");
-		}, 2000);
+					setUploadProgress(
+						Math.round(
+							(completedUploads / uploads.filter((u) => u.file).length) * 100,
+						),
+					);
+				}),
+			);
+
+			const result = await axios.post(`${API_URL}/api/admin/home`, {
+				...inputs,
+				...uploadedImages,
+			});
+
+			setFormStatus(result?.data?.message);
+
+			setTimeout(() => {
+				setFormStatus("Upload Changes");
+				setUploadProgress(0);
+			}, 2000);
+		} catch (error) {
+			console.error(error);
+
+			setFormStatus("Upload Failed");
+
+			setTimeout(() => {
+				setFormStatus("Upload Changes");
+				setUploadProgress(0);
+			}, 2000);
+		}
 	}
 
 	return (
@@ -446,7 +468,22 @@ export default function AdminPage() {
 							/>
 						</div>
 					</div>
+					{uploadProgress > 0 && (
+						<div className="w-full mt-6">
+							<div className="w-full h-3 rounded bg-gray-200 overflow-hidden">
+								<div
+									className="bg-green-500 h-full transition-all duration-300"
+									style={{
+										width: `${uploadProgress}%`,
+									}}
+								/>
+							</div>
 
+							<p className="text-center mt-2 font-semibold">
+								{uploadProgress}%
+							</p>
+						</div>
+					)}
 					<button
 						className={`transition-all bg-global_navy duration-300 mt-4 text-white min-w-48 mx-auto w-fit px-8 py-3 rounded-lg font-semibold hover:opacity-90 ${formStatus.toLowerCase() == "uploaded successfully" ? "bg-green-500" : "bg-global_navy"} `}
 						type="submit"

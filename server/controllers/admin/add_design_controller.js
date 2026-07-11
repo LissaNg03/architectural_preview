@@ -1,18 +1,24 @@
 /** @format */
 
-const addDesignService = require("../../services/add_design_service");
+const add_design_service = require("../../services/service_helpers/add_design_service");
+
 const add_design_controller = async (req, res) => {
 	try {
-		const result = await addDesignService(req);
+		const design = await add_design_service(req);
 
 		return res.status(201).json({
 			success: true,
-			message: "Design Added Successfully",
-			data: result,
+			message: "Design uploaded successfully",
+			data: design,
 		});
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ message: "ERROR UPLOADING", error: error.message });
+
+		return res.status(500).json({
+			success: false,
+			message: "Error uploading design",
+			error: error.message,
+		});
 	}
 };
 

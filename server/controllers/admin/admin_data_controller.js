@@ -5,6 +5,8 @@ const admin_data_controller = async (req, res) => {
 	try {
 		const adminData = await AdminModel.find().select("-email_secret");
 
+		// console.log(JSON.stringify(adminData, null, 2));
+
 		res.json({
 			adminData,
 		});

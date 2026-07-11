@@ -21,12 +21,24 @@ const delete_design_controller = async (req, res) => {
 
 		// 2. DEL FROM CLOUDINARY (WITH CORRECT RESOURCE TYPES)
 
+		// console.log("VIDEO:",  video.public_id);
+
+		// console.log("THUMBNAIL:",  thumbnail.public_id);
+
+		// images.forEach((img) =>
+		// 	console.log("IMAGE:",  img.public_id),
+		// );
+
+		// floor_plans.forEach((fp) =>
+		// 	console.log("FLOOR PLAN:",  fp.public_id),
+		// );
+
 		const deleteOperations = [];
 
 		// VIDEO (IMPORTANT: resource_type = video)
 		if (video?.public_id) {
 			deleteOperations.push(
-				cloudinary.uploader.destroy("design_uploads/" + video.public_id, {
+				cloudinary.uploader.destroy(video.public_id, {
 					resource_type: "video",
 					invalidate: true,
 				}),
@@ -36,7 +48,7 @@ const delete_design_controller = async (req, res) => {
 		// THUMBNAIL (image)
 		if (thumbnail?.public_id) {
 			deleteOperations.push(
-				cloudinary.uploader.destroy("design_uploads/" + thumbnail.public_id, {
+				cloudinary.uploader.destroy(thumbnail.public_id, {
 					resource_type: "image",
 					invalidate: true,
 				}),
@@ -48,7 +60,7 @@ const delete_design_controller = async (req, res) => {
 			floor_plans.forEach((fp) => {
 				if (fp?.public_id) {
 					deleteOperations.push(
-						cloudinary.uploader.destroy("design_uploads/" + fp.public_id, {
+						cloudinary.uploader.destroy(fp.public_id, {
 							resource_type: "image",
 							invalidate: true,
 						}),
@@ -62,7 +74,7 @@ const delete_design_controller = async (req, res) => {
 			images.forEach((img) => {
 				if (img?.public_id) {
 					deleteOperations.push(
-						cloudinary.uploader.destroy("design_uploads/" + img.public_id, {
+						cloudinary.uploader.destroy(img.public_id, {
 							resource_type: "image",
 							invalidate: true,
 						}),
@@ -74,7 +86,7 @@ const delete_design_controller = async (req, res) => {
 		// 3. EXECUTE ALL DELETES
 		const results = await Promise.allSettled(deleteOperations);
 
-		// console.log("CLOUDINARY DELETE RESULTS:", results);
+		console.log("CLOUDINARY DELETE RESULTS:", results);
 
 		// 4. DELETE FROM DATABASE LAST
 		await DesignModel.findByIdAndDelete(design_id);

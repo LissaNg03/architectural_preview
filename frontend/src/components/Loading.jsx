@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 export default function Loading() {
 	return (
-		<div className=" bg-slate-400 w-full h-full aspect-video flex justify-center items-center">
+		<div className=" bg-slate-400 w-full h-screen aspect-video flex justify-center items-center">
 			<motion.div
 				initial={{ rotateZ: 0 }}
 				animate={{ rotateZ: "360deg" }}

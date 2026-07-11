@@ -6,7 +6,9 @@ import { motion } from "framer-motion";
 import heroBg from "../assets/hero_bg.jpg";
 import { section } from "framer-motion/client";
 import StatCard from "./StatCard/StatCard";
+import { useNavigate } from "react-router-dom";
 export default function Hero({ social_links, data }) {
+	const navigate = useNavigate();
 	const hero_socialLinks =
 		social_links?.filter(
 			(link) =>
@@ -27,7 +29,32 @@ export default function Hero({ social_links, data }) {
 		document.getElementById("Designs").scrollIntoView({ behavior: "smooth" });
 	}
 
+	function handleLinkClick(link, name) {
+		console.log(link, name);
+		let url = "";
+
+		switch (name) {
+			case "whatsapp":
+				url = `https://wa.me/${link}?text=Hi%20there,%20got%20this%20number%20from%20your%20website.`;
+				break;
+
+			case "tiktok":
+				url = `https://www.tiktok.com/@${link}`;
+				break;
+
+			case "facebook":
+				url = `https://www.facebook.com/${link}`;
+				break;
+
+			default:
+				return;
+		}
+
+		window.open(url, "_blank");
+	}
+
 	// console.log("SOCIAL LINKS: ");
+	console.log("data", data)
 	// console.log(hero_socialLinks);
 	// console.log(hero_socialLinks);
 
@@ -118,7 +145,7 @@ export default function Hero({ social_links, data }) {
 										background: index === 0 && "white",
 										color: index === 0 && "black",
 									}}
-									onClick={() => window.open(`${link.link}`, "_blank")}
+									onClick={() => handleLinkClick(link.link, link.name)}
 									className="social_link_btn"
 								>
 									{link.name}

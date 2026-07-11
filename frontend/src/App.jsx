@@ -11,6 +11,8 @@ import ViewAllDesigns from "./pages/admin/ViewAllDesigns";
 import EditDesign from "./pages/admin/EditDesign";
 import ProtectedRoute from "./pages/admin/context/ProtectedRoute";
 import Credentials from "./pages/admin/Credentials";
+import NotFound from "./components/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 export const DataContext = createContext();
 const API_URL = import.meta.env.VITE_BASE_URL;
 function App() {
@@ -19,6 +21,7 @@ function App() {
 	const [scrollY, setScrollY] = useState(window.scrollY);
 	const [adminData, setAdminData] = useState({});
 	const [designs, SetDesigns] = useState([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -30,14 +33,20 @@ function App() {
 					// console.log(data);
 					setAdminData(() => data?.adminData[0]);
 					SetDesigns(() => data?.designs);
+					setLoading(false);
 				}
 			} catch (error) {
 				console.log(error);
+				setLoading(false);
+			} finally {
+				setLoading(false);
 			}
 		};
 
 		fetchData();
 	}, []);
+
+	// console.log("designs", designs);
 
 	useEffect(() => {
 		// console.log(adminData);
@@ -71,9 +80,10 @@ function App() {
 	}, []);
 	return (
 		<DataContext.Provider
-			value={{ designs, adminData, scrollY, innerHeight, innerWidth }}
+			value={{ loading, designs, adminData, scrollY, innerHeight, innerWidth }}
 		>
 			<BrowserRouter>
+				<ScrollToTop />
 				<Routes>
 					<Route
 						path="/"
@@ -117,6 +127,7 @@ function App() {
 							element={<EditDesign />}
 						/>
 					</Route>
+					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</BrowserRouter>
 		</DataContext.Provider>

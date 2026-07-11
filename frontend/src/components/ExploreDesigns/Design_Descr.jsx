@@ -34,7 +34,7 @@ export default function Design_Descr({ design, delay = 0 }) {
 
 	return (
 		<motion.div
-			className="w-[55%] max-w-[650px] py-4 min-h-[315px] pr-2 gap-4 flex flex-col items-start justify-between"
+			className="w-[55%] max-w-[650px] overflow-hidden py-4 min-h-[315px] pr-2 gap-4 flex flex-col items-start justify-between"
 			variants={containerVariants}
 			initial="hidden"
 			whileInView="show"
@@ -47,7 +47,10 @@ export default function Design_Descr({ design, delay = 0 }) {
 				>
 					{design.name}
 				</motion.h3>
-				<motion.p className="max-md:text-sm text-lg" variants={itemVariants}>
+				<motion.p
+					className="max-md:text-sm text-wrap text-lg"
+					variants={itemVariants}
+				>
 					{design.quotation.description}
 				</motion.p>
 			</div>

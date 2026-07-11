@@ -9,6 +9,7 @@ import About from "../components/About";
 import Testimonials from "../components/Testimonials";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
+import Loading from "../components/Loading";
 import { DataContext } from "../App";
 export default function Homepage({ scrollY, innerHeight }) {
 	const location = useLocation();
@@ -16,12 +17,7 @@ export default function Homepage({ scrollY, innerHeight }) {
 	const { design } = location.state || {};
 	const hasScrolledRef = useRef(false);
 
-	const { designs, adminData } = useContext(DataContext);
-
-	useEffect(() => {
-		// console.log(designs);
-		// console.log(adminData);
-	}, [adminData, designs]);
+	const { designs, adminData, loading } = useContext(DataContext);
 
 	useEffect(() => {
 		if (design && !hasScrolledRef.current) {
@@ -36,6 +32,8 @@ export default function Homepage({ scrollY, innerHeight }) {
 			hasScrolledRef.current = true;
 		}
 	}, [design, navigate, location.pathname]);
+
+	if (loading) return <Loading />;
 
 	return (
 		<main className="max-w-[1600px] pt-[100vh] mx-auto">

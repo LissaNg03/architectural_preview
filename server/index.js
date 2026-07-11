@@ -35,16 +35,21 @@ app.use(async (req, res, next) => {
 		next(err);
 	}
 });
-// mongoose
-// 	.connect(process.env.MONGO_URI)
-// 	.then(() => {
-// 		console.log("MongoDB connected");
+mongoose
+	.connect(process.env.MONGO_URI)
+	.then(() => {
+		console.log("MongoDB connected");
 
-// 	app.listen(3000, "localhost", () =>
-// 		console.log("Server running on port 3000"),
-// 	);
-// })
-// .catch((err) => console.log(err));
+		app.listen(3000, "localhost", () =>
+			console.log("Server running on port 3000"),
+		);
+	})
+	.catch((err) => console.log(err));
+
+//VERIFY TOKEN
+app.use("/api/admin/verify", verifyToken, (req, res) =>
+	res.json({ valid: true }),
+);
 
 //ADMIN ROUTES
 app.get("/api/refresh", refreshTokenController);

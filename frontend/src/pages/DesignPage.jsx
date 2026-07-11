@@ -7,6 +7,7 @@ import DesignFloorplan from "../components/DesignFloorplan";
 import DesignVideo from "../components/DesignVideo";
 import Footer from "../components/Footer";
 import PageLoader from "../components/PageLoader";
+import fetchDesign from "../components/fetchDesign";
 const API_URL = import.meta.env.VITE_BASE_URL;
 export default function DesignPage({ scrollY, innerHeight, innerWidth }) {
 	const navigate = useNavigate();
@@ -15,14 +16,12 @@ export default function DesignPage({ scrollY, innerHeight, innerWidth }) {
 	const { id } = useParams();
 
 	useEffect(() => {
-		const fetchDesign = async () => {
+		const getDesign = async () => {
 			try {
 				setLoading(true);
 
-				const res = await fetch(`${API_URL}/api/design/${id}`);
-				const data = await res.json();
-
-				setDesign(data);
+				const _design = await fetchDesign(id);
+				setDesign(_design);
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -30,8 +29,10 @@ export default function DesignPage({ scrollY, innerHeight, innerWidth }) {
 			}
 		};
 
-		fetchDesign();
+		getDesign();
 	}, [id]);
+
+	console.log(design);
 
 	const scrollToTop = () => {
 		window.scrollTo({ top: 0, behavior: "smooth" });

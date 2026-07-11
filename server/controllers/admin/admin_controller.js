@@ -1,59 +1,43 @@
 /** @format */
-const DesignModel = require("../../models/design_model");
-const AdminModel = require("../../models/admin_model");
 
-const {
-	uploadToCloudinary,
-	resolveImage,
-} = require("./cloudinary_helpers/admin_helpers");
+const AdminModel = require("../../models/admin_model");
+const deleteAsset = require("../../services/service_helpers/delete_replaced_assets");
 const admin_controller = async (req, res) => {
 	try {
-		//GET EXISTING URLS IN THE DATABASE
-		const existing = await AdminModel.findOne(
-			{ singletonKey: "ADMIN_CONFIG" },
-			"business_logo hero_data.hero_img who_we_are_section_data.img",
-		);
+		// GET CURRENT DATA
+		const existing = await AdminModel.findOne({
+			singletonKey: "ADMIN_CONFIG",
+		});
 
-		//THIS TAKES THE FILE BUFFER AND UPLOADS THE FILE TO CLOUDINARY AND RETURN THE REQUIRED METADATA
+		if (!existing) {
+			return res.status(404).json({
+				message: "Admin configuration not found.",
+			});
+		}
 
-		//SET URLS TO THE ONES ALREADY IN THE DB IF NO FILES WERE SENT
-		const [business_logo, hero_img, who_we_are_img] = await Promise.all([
-			resolveImage(
-				"business_logo_img",
-				existing?.business_logo.url,
-				existing?.business_logo?.public_id,
-				req,
-			),
-			resolveImage(
-				"hero_img",
-				existing?.hero_data?.hero_img.url,
-				existing?.hero_data?.hero_img.public_id,
-				req,
-			),
-			resolveImage(
-				"who_we_are_img",
-				existing?.who_we_are_section_data?.img.url,
-				existing?.who_we_are_section_data?.img.public_id,
-				req,
-			),
+		// USE NEW IMAGES IF SENT, OTHERWISE KEEP EXISTING ONES
+		const business_logo = req.body.business_logo ?? existing.business_logo;
+
+		const hero_img = req.body.hero_img ?? existing.hero_data.hero_img;
+
+		const who_we_are_img =
+			req.body.who_we_are_img ?? existing.who_we_are_section_data.img;
+		// Delete replaced Cloudinary assets
+		await Promise.all([
+			deleteAsset(existing.business_logo, business_logo),
+			deleteAsset(existing.hero_data.hero_img, hero_img),
+			deleteAsset(existing.who_we_are_section_data.img, who_we_are_img),
 		]);
 
-		// UPDATE DB
-		const saveToDB = await AdminModel.findOneAndUpdate(
+		const updatedAdmin = await AdminModel.findOneAndUpdate(
 			{ singletonKey: "ADMIN_CONFIG" },
 			{
 				business_name: req.body.business_name,
 
-				business_logo: {
-					url: business_logo.url,
-					public_id: business_logo.public_id,
-				},
+				business_logo,
 
 				hero_data: {
-					hero_img: {
-						url: hero_img.url,
-						public_id: hero_img.public_id,
-					},
+					hero_img,
 					hero_bigger_text: req.body.hero_bigger_text,
 					hero_smaller_text: req.body.hero_smaller_text,
 					clients_estimate: req.body.clients_estimate,
@@ -70,31 +54,48 @@ const admin_controller = async (req, res) => {
 
 				who_we_are_section_data: {
 					text: req.body.who_we_are_text,
-					img: {
-						url: who_we_are_img.url,
-						public_id: who_we_are_img.public_id,
-					},
+					img: who_we_are_img,
 				},
 
 				social_links: [
-					{ name: "tel_no", link: req.body.tel_no },
-					{ name: "email", link: req.body.email },
-					{ name: "tiktok", link: req.body.tiktok },
-					{ name: "facebook", link: req.body.facebook },
-					{ name: "whatsapp", link: req.body.whatsapp },
+					{
+						name: "tel_no",
+						link: req.body.tel_no,
+					},
+					{
+						name: "email",
+						link: req.body.email,
+					},
+					{
+						name: "tiktok",
+						link: req.body.tiktok_link,
+					},
+					{
+						name: "facebook",
+						link: req.body.facebook_link,
+					},
+					{
+						name: "whatsapp",
+						link: req.body.whatsApp_number,
+					},
 				],
 
 				email_secret: req.body.email_secret,
 			},
 			{
 				returnDocument: "after",
-				upsert: true,
 			},
 		);
+		console.log("updatedAdmin");
+		console.dir(updatedAdmin.social_links, { depth: null });
 
-		res.json({ message: "Uploaded Successfully", db: "saveToDB" });
+		res.json({
+			message: "Uploaded Successfully",
+			admin: updatedAdmin,
+		});
 	} catch (error) {
 		console.error(error);
+
 		res.status(500).json({
 			message: "ERROR UPLOADING",
 			error: error.message,
